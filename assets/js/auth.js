@@ -129,10 +129,8 @@
     return true;
   }
 
-  /* ---------- 用户建议（任何登录用户可提交，仅管理员可读取） ---------- */
+  /* ---------- 用户建议（登录用户可提交，经内容评控后仅管理员可查看） ---------- */
   const SUGGESTIONS_KEY = 'janez_suggestions';
-  /* 建议邮件直达地址（管理员收件箱）；改动仅在此处 */
-  const SUGGESTION_NOTIFY_EMAIL = '253324704@qq.com';
 
   /* ---------- 建议内容评控（恶意发言禁止发布） ---------- */
   const BAD_KEYWORDS = [
@@ -206,28 +204,6 @@
     return true;
   }
 
-  /* ---------- 邮件直达（mailto 预填草稿，零密钥、原生可用） ---------- */
-  function mailtoHref(to, subject, bodyText) {
-    return 'mailto:' + to +
-      (subject ? '?subject=' + encodeURIComponent(subject) : '') +
-      (subject ? '&body=' : (bodyText ? '?body=' : '')) +
-      (bodyText ? encodeURIComponent(bodyText) : '');
-  }
-  /* 把单条建议转成预填邮件草稿 */
-  function suggestionMailto(user, body) {
-    const subject = '【网站建议】来自用户 ' + user;
-    const text = '提交账号：' + user + '\n提交时间：' + new Date().toLocaleString('zh-CN') +
-      '\n\n建议内容：\n' + body;
-    return mailtoHref(SUGGESTION_NOTIFY_EMAIL, subject, text);
-  }
-  /* 把管理端当前全部建议打包成一封邮件草稿 */
-  function allSuggestionsMailto(list) {
-    const rows = (list || []).map((x, i) =>
-      (i + 1) + '. [' + x.user + '] ' + new Date(x.ts).toLocaleString('zh-CN') + '\n   ' + x.body).join('\n\n');
-    const subject = '【网站建议】共 ' + (list || []).length + ' 条';
-    return mailtoHref(SUGGESTION_NOTIFY_EMAIL, subject, '以下为本站收到的全部用户建议：\n\n' + rows);
-  }
-
   window.JANEZ_AUTH = {
     verify, register,
     currentSession, setSession, logout, isAdmin,
@@ -237,8 +213,6 @@
     BUILTIN_ADMIN,
     USERS_KEY, SESSION_KEY, CONTENT_KEY, THEME_KEY, SUGGESTIONS_KEY,
     getSuggestions, addSuggestion, clearSuggestions,
-    SUGGESTION_NOTIFY_EMAIL,
-    checkSuggestion, deleteSuggestion,
-    suggestionMailto, allSuggestionsMailto
+    checkSuggestion, deleteSuggestion
   };
 })();

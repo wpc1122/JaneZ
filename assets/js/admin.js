@@ -174,7 +174,6 @@
   function fillSuggestions() {
     const list = A.getSuggestions();
     const box = $('#sugList');
-    if (A.SUGGESTION_NOTIFY_EMAIL && $('#admSugMail')) $('#admSugMail').textContent = A.SUGGESTION_NOTIFY_EMAIL;
     if (!list.length) { box.innerHTML = '<div class="adm-sug-empty">暂无用户建议。</div>'; return; }
     box.innerHTML = list.map(x => `
       <div class="adm-sug-item" data-id="${x.id}">
@@ -184,7 +183,6 @@
         </div>
         <div class="adm-sug-body">${escapeHtml(x.body)}</div>
         <div class="adm-sug-actions">
-          <a class="btn sm" href="${escapeAttr(A.suggestionMailto(x.user, x.body))}">发该条</a>
           <button class="btn sm danger" data-del-sug="${x.id}">删除</button>
         </div>
       </div>`).join('');
@@ -193,14 +191,7 @@
       A.deleteSuggestion(b.dataset.delSug); fillSuggestions(); toast('该条建议已删除', true);
     }));
   }
-  function escapeAttr(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
-  $('#sugExportMail').addEventListener('click', () => {
-    const list = A.getSuggestions();
-    if (!list.length) { toast('暂无建议可发送', false); return; }
-    location.href = A.allSuggestionsMailto(list);
-    toast('已预填全部建议的邮件草稿，请在邮箱确认发送', true);
-  });
   $('#sugClear').addEventListener('click', () => {
     if (!confirm('确认清空全部用户建议？此操作不可恢复。')) return;
     A.clearSuggestions(); fillSuggestions(); toast('建议已全部清空', true);

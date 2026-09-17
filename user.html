@@ -37,7 +37,7 @@
   <!-- 建议窗口 -->
   <div class="auth-card">
     <h3 class="u-sug-title">给网站提建议</h3>
-    <p class="auth-tip" style="margin:0 0 14px">欢迎就内容准确性、版面、功能等提出建议，通过内容安全审核后，可一键发送到 <b id="sugMail">253324704@qq.com</b>。</p>
+    <p class="auth-tip" style="margin:0 0 14px">欢迎就内容准确性、版面、功能等提出建议，通过内容安全审核后保存在站内，管理员会在后台查看并处理。</p>
     <form id="sugForm">
       <label class="auth-field">
         <span>建议内容（4–500 字）</span>
@@ -45,9 +45,8 @@
       </label>
       <div class="auth-msg" id="sugMsg" role="alert"></div>
       <button type="submit" class="auth-submit" id="sugSubmit">提交建议</button>
-      <a class="auth-submit sug-mail" id="sugSend" href="mailto:253324704@qq.com" style="display:none">发送至 253324704@qq.com（邮箱预填）</a>
     </form>
-    <p class="auth-tip sug-note" style="margin:10px 0 0">内容将自动做安全评控：恶意辱骂、广告引流、脚本注入等会被拦截，不通过则无法发布。发送会预填一封草稿到你的默认邮箱，确认后发送即可。</p>
+    <p class="auth-tip sug-note" style="margin:10px 0 0">内容将自动做安全评控：恶意辱骂、广告引流、脚本注入等会被拦截，不通过则无法发布。</p>
     <div class="u-sent" id="uSent"></div>
   </div>
 
@@ -67,12 +66,11 @@
 .u-sent { margin-top: 16px; }
 .u-sent .us-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; font-size: 13px; }
 .u-sent .us-item .us-time { font-size: 11.5px; color: var(--muted); margin-bottom: 5px; }
-.sug-mail { display: inline-block; margin-top: 8px; text-decoration: none; text-align: center; }
 .sug-note { font-size: 12px; color: var(--muted); line-height: 1.6; }
 .auth-card { text-align: left; }
 </style>
 
-<script src="assets/js/auth.js?v=6"></script>
-<script src="assets/js/user-page.js?v=6"></script>
+<script src="assets/js/auth.js?v=7"></script>
+<script src="assets/js/user-page.js?v=7"></script>
 </body>
 </html>
