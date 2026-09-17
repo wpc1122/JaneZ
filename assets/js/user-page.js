@@ -4,6 +4,9 @@
   const A = window.JANEZ_AUTH;
   const $ = s => document.querySelector(s);
 
+  /* 守卫：账号层未加载成功时回到登录页，避免后续 取 session / 绑定 事件时抛错 */
+  if (!A || typeof A.currentSession !== 'function') { location.replace('login.html'); return; }
+
   const sess = A.currentSession();
   if (!sess) { location.replace('login.html'); return; }
 

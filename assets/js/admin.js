@@ -8,6 +8,9 @@
   const D = window.JANEZ_DATA;
   const $ = s => document.querySelector(s);
 
+  /* 守卫：账号层 / 数据桥未加载成功时回到登录页，避免后续取 session 抛错 */
+  if (!A || typeof A.currentSession !== 'function') { location.replace('login.html'); return; }
+
   /* ---------- 鉴权守卫：仅管理员可访问 ---------- */
   const sess = A.currentSession();
   if (!sess || sess.role !== 'admin') {
@@ -167,7 +170,7 @@
   });
 
   /* ---------- 退出 ---------- */
-  $('#admLogout').addEventListener('click', () => { A.setSession(null); location.replace('login.html'); });
+  $('#admLogout').addEventListener('click', () => { (A.logout || A.setSession.bind(A, null))(); location.replace('login.html'); });
 
   /* ---------- 启动 ---------- */
   loadUiControls();

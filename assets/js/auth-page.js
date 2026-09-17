@@ -2,6 +2,16 @@
 (function () {
   'use strict';
   const A = window.JANEZ_AUTH;
+  /* 守卫：若账号层 auth.js 未加载成功（缓存/网络异常），明确提示而非静默崩溃，
+     否则下方 form submit 监听器不会绑定，「登录」按钮点了无任何反应 */
+  if (!A || typeof A.verify !== 'function' || typeof A.register !== 'function') {
+    const m0 = document.getElementById('authMsg');
+    if (m0) {
+      m0.textContent = '页面组件未加载完成。请 Ctrl+F5 强制刷新后重试。';
+      m0.classList.add('err');
+    }
+    return;
+  }
   let mode = 'login';
 
   const tabs = document.querySelectorAll('.auth-tab');
