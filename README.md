@@ -1,6 +1,6 @@
 # 张靓颖 Jane Zhang · 明星资料站
 
-一个纯静态、零依赖的明星资料站，参考 [jujingyi.github.io](https://jujingyi.github.io/) 的版式结构（News / Resume / Music / Movie / Gallery / Contact），结合张靓颖的作品特点做了模块扩展。
+一个纯静态、零依赖的明星资料站，结合张靓颖的作品特点做了模块扩展。
 
 ## 目录结构
 
