@@ -362,20 +362,37 @@
   /* ================= 导航登录/管理入口 ================= */
   function syncAuthEntry() {
     const link = $('#navAuth');
-    if (!link) return;
+    const userBtn = $('#navUser');
+    const logoutBtn = $('#navLogout');
     const A = window.JANEZ_AUTH;
     const s = A ? A.currentSession() : null;
     if (s && s.role === 'admin') {
-      link.innerHTML = '<em>Admin</em>管理 · ' + s.user;
-      link.setAttribute('href', 'admin.html');
-      link.classList.add('is-admin');
+      if (link) { link.innerHTML = '<em>Admin</em>管理 · ' + s.user; link.setAttribute('href', 'admin.html'); link.classList.add('is-admin'); }
     } else if (s) {
-      link.innerHTML = '<em>Hi</em>' + s.user;
-      link.setAttribute('href', 'login.html');
+      if (link) { link.innerHTML = '<em>Hi</em>' + s.user; link.setAttribute('href', 'user.html'); link.classList.remove('is-admin'); }
     } else {
-      link.innerHTML = '<em>Account</em>登录';
-      link.setAttribute('href', 'login.html');
-      link.classList.remove('is-admin');
+      if (link) { link.innerHTML = '<em>Account</em>登录'; link.setAttribute('href', 'login.html'); link.classList.remove('is-admin'); }
+    }
+    // 账号 + 退出（右上角，登录后可见）
+    if (userBtn) {
+      userBtn.style.display = s ? 'inline-flex' : 'none';
+      if (s) {
+        userBtn.setAttribute('href', s.role === 'admin' ? 'admin.html' : 'user.html');
+        userBtn.title = s.role === 'admin' ? s.user + '（管理员）' : s.user + '（普通用户）';
+        const ava = $('#navUserAva'); if (ava) ava.textContent = s.user.slice(0, 1).toUpperCase();
+        const nm = $('#navUserName'); if (nm) nm.textContent = s.user;
+      }
+    }
+    if (logoutBtn) {
+      logoutBtn.style.display = s ? '' : 'none';
+      if (s && !logoutBtn.dataset.bound) {
+        logoutBtn.dataset.bound = '1';
+        logoutBtn.addEventListener('click', () => {
+          if (!confirm('确认退出当前登录？')) return;
+          A.logout();
+          location.replace('index.html');
+        });
+      }
     }
   }
 

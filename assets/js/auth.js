@@ -56,9 +56,10 @@
     }
     const found = getUsers().find(u => u.user === user);
     if (!found) return null;
-    return (await hashUser(user, pw)) === found.hash
-      ? { user: found.user, role: found.role || 'user', builtin: false }
-      : null;
+    if ((await hashUser(user, pw)) !== found.hash) return null;
+    // 注册用户只有普通权限：无论记录中 role 为何，一律强制 user，
+    // 只有内置 glc 才获得 admin（防止 localStorage 被篡改越权）
+    return { user: found.user, role: 'user', builtin: false };
   }
 
   /* ---------- 注册 ---------- */
@@ -84,6 +85,11 @@
     if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s));
     else localStorage.removeItem(SESSION_KEY);
   }
+  /* 退出：仅清除本机会话；内容与界面编辑保留（属站点本地数据） */
+  function logout() {
+    localStorage.removeItem(SESSION_KEY);
+    return true;
+  }
   function isAdmin() {
     const s = currentSession();
     return !!(s && s.role === 'admin');
@@ -94,31 +100,69 @@
     try { return JSON.parse(localStorage.getItem(CONTENT_KEY)) || {}; }
     catch (e) { return {}; }
   }
-  function saveContent(c) { localStorage.setItem(CONTENT_KEY, JSON.stringify(c)); }
-  function resetContent() { localStorage.removeItem(CONTENT_KEY); }
+  /* 写操作统一加管理员守卫：普通用户 / 未登录一律拒绝，防越权 */
+  function saveContent(c) {
+    if (!isAdmin()) throw new Error('权限不足：仅网站管理员可编辑内容');
+    localStorage.setItem(CONTENT_KEY, JSON.stringify(c));
+  }
+  function resetContent() {
+    if (!isAdmin()) throw new Error('权限不足：仅网站管理员可编辑内容');
+    localStorage.removeItem(CONTENT_KEY);
+  }
 
   /* ---------- 界面设置 ---------- */
   function getUi() {
     try { return JSON.parse(localStorage.getItem(THEME_KEY)) || {}; }
     catch (e) { return {}; }
   }
-  function saveUi(o) { localStorage.setItem(THEME_KEY, JSON.stringify(o)); }
+  function saveUi(o) {
+    if (!isAdmin()) throw new Error('权限不足：仅网站管理员可修改界面设置');
+    localStorage.setItem(THEME_KEY, JSON.stringify(o));
+  }
 
   /* ---------- 注册用户管理（仅管理员） ---------- */
   function deleteUser(user) {
     user = (user || '').trim();
+    if (!isAdmin()) return false;
     if (!user || user === BUILTIN_ADMIN.user) return false;
     saveUsers(getUsers().filter(u => u.user !== user));
     return true;
   }
 
+  /* ---------- 用户建议（任何登录用户可提交，仅管理员可读取） ---------- */
+  const SUGGESTIONS_KEY = 'janez_suggestions';
+  function getSuggestions() {
+    try { return JSON.parse(localStorage.getItem(SUGGESTIONS_KEY)) || []; }
+    catch (e) { return []; }
+  }
+  function addSuggestion(body) {
+    const s = currentSession();
+    if (!s) throw new Error('请先登录后再提交建议');
+    body = String(body || '').trim();
+    if (body.length < 4) throw new Error('建议内容至少 4 个字');
+    if (body.length > 500) throw new Error('建议内容过长（上限 500 字）');
+    const list = getSuggestions();
+    list.unshift({
+      id: 'sg_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      user: s.user, ts: Date.now(), body
+    });
+    localStorage.setItem(SUGGESTIONS_KEY, JSON.stringify(list.slice(0, 200)));
+    return true;
+  }
+  function clearSuggestions() {
+    if (!isAdmin()) throw new Error('权限不足：仅网站管理员可清空建议');
+    localStorage.removeItem(SUGGESTIONS_KEY);
+    return true;
+  }
+
   window.JANEZ_AUTH = {
     verify, register,
-    currentSession, setSession, isAdmin,
+    currentSession, setSession, logout, isAdmin,
     getContent, saveContent, resetContent,
     getUi, saveUi,
     getUsers, deleteUser,
     BUILTIN_ADMIN,
-    USERS_KEY, SESSION_KEY, CONTENT_KEY, THEME_KEY
+    USERS_KEY, SESSION_KEY, CONTENT_KEY, THEME_KEY, SUGGESTIONS_KEY,
+    getSuggestions, addSuggestion, clearSuggestions
   };
 })();

@@ -16,7 +16,24 @@
     <span class="brand-en">JANE&nbsp;ZHANG</span>
   </a>
 
-  <div class="auth-card">
+  <div class="auth-card" id="authLoggedCard" style="display:none">
+    <div class="lgd-head">
+      <span class="lgd-avatar" id="lgdAvatar">?</span>
+      <div>
+        <div class="lgd-name" id="lgdName">—</div>
+        <div class="lgd-role" id="lgdRole">普通用户</div>
+      </div>
+    </div>
+    <p class="auth-tip" style="margin:14px 0">当前登录账号拥有对应权限。管理员可进入管理端编辑与查看建议。</p>
+    <div class="lgd-actions">
+      <a class="btn lgd-btn" href="index.html">查看主站</a>
+      <a class="btn lgd-btn" href="user.html">我的账号 / 提建议</a>
+      <a class="btn lgd-btn" id="lgdAdminBtn" href="admin.html" style="display:none">进入管理端</a>
+      <button class="btn lgd-btn danger" id="lgdLogout">退出登录</button>
+    </div>
+  </div>
+
+  <div class="auth-card" id="authFormCard">
     <div class="auth-tabs" role="tablist">
       <button class="auth-tab active" data-tab="login" role="tab">登录</button>
       <button class="auth-tab" data-tab="register" role="tab">注册</button>
@@ -48,7 +65,7 @@
   <a class="auth-back" href="index.html">← 返回主页</a>
 </div>
 
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/auth-page.js"></script>
+<script src="assets/js/auth.js?v=2"></script>
+<script src="assets/js/auth-page.js?v=2"></script>
 </body>
 </html>

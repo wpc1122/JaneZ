@@ -145,6 +145,31 @@ img { max-width: 100%; display: block; }
 .menu-btn.on span:nth-child(2) { opacity: 0; }
 .menu-btn.on span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
 
+/* 右上角：账号胶囊 + 退出按钮（登录后可见） */
+.nav-userchip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 5px 12px 5px 5px; border: 1px solid var(--border); border-radius: 30px;
+  background: var(--surface); color: var(--text); font-size: 13px;
+  transition: .2s var(--ease); white-space: nowrap;
+}
+.nav-userchip:hover { border-color: var(--gold); box-shadow: 0 6px 18px rgba(0,0,0,.25); }
+.nav-user-ava {
+  width: 24px; height: 24px; border-radius: 50%; flex: 0 0 auto;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  color: #14110a; font-weight: 700; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logout {
+  padding: 6px 14px; border: 1px solid var(--border); border-radius: 30px;
+  background: transparent; color: var(--text-2); font-size: 13px; cursor: pointer;
+  transition: .2s var(--ease); white-space: nowrap;
+}
+.nav-logout:hover { color: #ff6b6b; border-color: rgba(255,107,107,.5); background: rgba(255,107,107,.1); }
+@media (max-width: 1100px) {
+  .nav-userchip #navUserName { display: none; }
+  .nav-userchip { padding: 5px; }
+}
+
 .scroll-progress { height: 2px; background: transparent; }
 .scroll-progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--gold), var(--accent)); }
 
@@ -786,6 +811,28 @@ html[data-theme="light"] .hero-photo-overlay {
 
 /* 导航登录入口（管理员态） */
 #navAuth.is-admin em { color: var(--gold); }
+
+/* 登录/用户页：账号卡 + 按钮组 */
+.lgd-head { display: flex; align-items: center; gap: 14px; }
+.lgd-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex: 0 0 auto;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  color: #14110a; font-weight: 700; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+}
+.lgd-name { font-size: 20px; font-weight: 600; }
+.lgd-role { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.lgd-role.is-admin { color: var(--gold); }
+.lgd-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 6px; }
+.lgd-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 10px 16px; font-size: 13.5px; font-weight: 500;
+  border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--text); cursor: pointer; transition: .2s var(--ease);
+}
+.lgd-btn:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+.lgd-btn.danger { color: #ff6b6b; border-color: rgba(255,107,107,.3); }
+.lgd-btn.danger:hover { background: rgba(255,107,107,.12); border-color: rgba(255,107,107,.5); }
 
 /* ============ 关键词跑马灯 ============ */
 .marquee-strip {
