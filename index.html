@@ -38,6 +38,7 @@
       <a href="#screen" class="nl"><em>Screen</em>影像</a>
       <a href="#gallery" class="nl"><em>Gallery</em>瞬间</a>
       <a href="#contact" class="nl"><em>Contact</em>联系</a>
+      <a href="login.html" id="navAuth" class="nl auth-link"><em>Account</em>登录</a>
     </nav>
     <div class="nav-tools">
       <button id="themeBtn" class="icon-btn" title="切换深浅色" aria-label="切换主题">
@@ -85,6 +86,11 @@
     <span class="sh-text">SCROLL</span>
   </a>
 </section>
+
+<!-- ============ 关键词跑马灯 ============ -->
+<div class="marquee-strip" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
 
 <!-- ============ 最新动态 ============ -->
 <section id="news" class="sec">
@@ -265,10 +271,6 @@
     <div class="contact-grid" id="platformGrid"></div>
     <div class="contact-info reveal">
       <div class="ci-item">
-        <span class="ci-label">商业合作</span>
-        <span class="ci-value">上海靡之音乐有限公司</span>
-      </div>
-      <div class="ci-item">
         <span class="ci-label">资料来源</span>
         <span class="ci-value">百度百科 · QQ音乐百科 · 维基百科音乐作品列表</span>
       </div>
@@ -278,11 +280,33 @@
 
 <footer id="footer">
   <div class="wrap footer-inner">
-    <div class="f-brand">
-      <span class="brand-cn">张靓颖</span>
-      <span class="brand-en">JANE ZHANG · OFFICIAL FAN SITE</span>
+    <div class="footer-grid">
+      <div class="f-col f-brand-col">
+        <div class="f-brand">
+          <span class="brand-cn">张靓颖</span>
+          <span class="brand-en">JANE ZHANG · OFFICIAL FAN SITE</span>
+        </div>
+        <p class="f-slogan">“终于等到你，还好我没放弃。”</p>
+      </div>
+      <div class="f-col">
+        <div class="f-col-title">快速导航</div>
+        <div class="f-links">
+          <a href="#news">最新动态</a>
+          <a href="#music">音乐作品</a>
+          <a href="#tour">巡回演唱会</a>
+          <a href="#awards">荣誉记录</a>
+          <a href="#gallery">光影瞬间</a>
+        </div>
+      </div>
+      <div class="f-col">
+        <div class="f-col-title">聆听与关注</div>
+        <div class="f-links" id="footerPlatLinks"></div>
+      </div>
     </div>
-    <p class="f-note">本站为粉丝向资料整理站点，内容整理自公开百科资料，版权归原权利人所有。</p>
+    <div class="f-bottom">
+      <p class="f-note">本站为粉丝向资料整理站点，内容整理自公开百科资料，版权归原权利人所有。</p>
+      <a class="f-admin-link" href="admin.html">管理端</a>
+    </div>
   </div>
 </footer>
 
@@ -305,6 +329,8 @@
 </div>
 
 <script src="assets/js/data.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/data-bridge.js"></script>
 <script src="assets/js/main.js"></script>
 </body>
 </html>

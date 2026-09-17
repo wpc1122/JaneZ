@@ -7,6 +7,11 @@
   const $ = (s, c) => (c || document).querySelector(s);
   const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
 
+  /* ---------- 数据源：内置数据 + 管理端覆盖（见 data-bridge.js） ---------- */
+  const DATA = (window.JANEZ_DATA && JANEZ_DATA.getMerged) ? JANEZ_DATA.getMerged() : null;
+  const src = (k) => (DATA && DATA[k] !== undefined ? DATA[k] : globalThis[k]);
+
+
   /* ---------- 渐变色板（用于生成封面视觉） ---------- */
   const PALETTE = [
     ['#8e7bf0', '#2b2258'],
@@ -26,7 +31,8 @@
 
   /* ================= 渲染：首屏数据 ================= */
   function renderHeroStats() {
-    $('#heroStats').innerHTML = PROFILE.stats.map(s => `
+    const P = src('PROFILE');
+    $('#heroStats').innerHTML = P.stats.map(s => `
       <div class="hs-item">
         <div class="hs-n">${s.n}<small>${s.u}</small></div>
         <div class="hs-l">${s.l}</div>
@@ -35,7 +41,7 @@
 
   /* ================= 渲染：最新动态 ================= */
   function renderNews() {
-    $('#newsGrid').innerHTML = NEWS.map(n => `
+    $('#newsGrid').innerHTML = src('NEWS').map(n => `
       <article class="news-card reveal">
         <div class="nc-top">
           <span class="nc-tag">${n.tag}</span>
@@ -48,10 +54,11 @@
 
   /* ================= 渲染：个人档案 ================= */
   function renderProfile() {
-    $('#pcIntro').textContent = PROFILE.intro;
-    $('#pcTags').innerHTML = ['流行 Pop', 'R&B', '爵士 Jazz', '灵魂乐 Soul', '海豚音', 'OST 女王']
+    const P = src('PROFILE');
+    $('#pcIntro').textContent = P.intro;
+    $('#pcTags').innerHTML = (P.tags && P.tags.length ? P.tags : ['流行 Pop', 'R&B', '爵士 Jazz', '灵魂乐 Soul', '海豚音', 'OST 女王'])
       .map(t => `<span>${t}</span>`).join('');
-    $('#factsTable').innerHTML = PROFILE.facts.map(f => `
+    $('#factsTable').innerHTML = P.facts.map(f => `
       <div class="fact-row">
         <span class="fact-k">${f.k}</span>
         <span class="fact-v">${f.v}</span>
@@ -63,7 +70,7 @@
 
   /* ================= 渲染：星路历程 ================= */
   function renderTimeline() {
-    $('#timeline').innerHTML = TIMELINE.map(t => `
+    $('#timeline').innerHTML = src('TIMELINE').map(t => `
       <div class="tl-item reveal">
         <div class="tl-card">
           <div class="tl-year">${t.year}<span>${t.date}</span></div>
@@ -77,7 +84,8 @@
   const TYPE_LABEL = { studio: '录音室专辑', ep: '迷你专辑 EP', live: '现场专辑', best: '精选辑' };
 
   function renderAlbums(filter) {
-    const list = filter === 'all' ? ALBUMS : ALBUMS.filter(a => a.type === filter);
+    const all = src('ALBUMS');
+    const list = filter === 'all' ? all : all.filter(a => a.type === filter);
     if (!list.length) {
       $('#albumGrid').innerHTML = '<p style="color:var(--muted)">暂无该分类作品。</p>';
       return;
@@ -109,7 +117,7 @@
 
   /* ================= 渲染：影视金曲 ================= */
   function renderOST() {
-    $('#ostList').innerHTML = OSTS.map(o => `
+    $('#ostList').innerHTML = src('OSTS').map(o => `
       <div class="ost-row">
         <span class="ost-year">${o.year}</span>
         <div>
@@ -121,7 +129,7 @@
 
   /* ================= 渲染：国际作品 ================= */
   function renderGlobal() {
-    $('#globalGrid').innerHTML = GLOBAL_SONGS.map((g, i) => `
+    $('#globalGrid').innerHTML = src('GLOBAL_SONGS').map((g, i) => `
       <div class="global-card reveal" style="animation-delay:${i * 60}ms">
         <div class="gc-year">${g.year}</div>
         <h3 class="gc-name">${g.name}</h3>
@@ -131,7 +139,7 @@
 
   /* ================= 渲染：巡演 ================= */
   function renderTours() {
-    $('#tourList').innerHTML = TOURS.map(t => `
+    $('#tourList').innerHTML = src('TOURS').map(t => `
       <div class="tour-item reveal ${t.name === '追' ? 'current' : ''}">
         <div>
           <div class="ti-name">${t.name}${t.name === '追' ? '<span class="ti-badge">进行中</span>' : ''}</div>
@@ -144,7 +152,8 @@
 
   /* ================= 渲染：荣誉 ================= */
   function renderAwards(cat) {
-    const list = cat === 'all' ? AWARDS : AWARDS.filter(a => a.cat === cat);
+    const all = src('AWARDS');
+    const list = cat === 'all' ? all : all.filter(a => a.cat === cat);
     $('#awardList').innerHTML = list.map((a, i) => `
       <div class="award-item reveal" style="animation-delay:${i * 40}ms">
         <span class="aw-year">${a.year}</span>
@@ -155,7 +164,7 @@
 
   /* ================= 渲染：影视与综艺 ================= */
   function renderScreen() {
-    $('#screenList').innerHTML = SCREENS.map(s => `
+    $('#screenList').innerHTML = src('SCREENS').map(s => `
       <div class="screen-item reveal">
         <span class="si-cat">${s.cat}</span>
         <div>
@@ -164,7 +173,7 @@
         </div>
         <span class="si-year">${s.year}</span>
       </div>`).join('');
-    $('#varietyList').innerHTML = VARIETY.map(v => `
+    $('#varietyList').innerHTML = src('VARIETY').map(v => `
       <div class="variety-item reveal">
         <span class="vi-year">${v.year}</span>
         <span class="vi-name">${v.name}</span>
@@ -176,14 +185,10 @@
   let galleryIndex = 0;
 
   function renderGallery() {
-    $('#galleryGrid').innerHTML = GALLERY.map((g, i) => `
+    $('#galleryGrid').innerHTML = src('GALLERY').map((g, i) => `
       <div class="gallery-item reveal" data-i="${i}" style="animation-delay:${i * 50}ms">
         <div class="gi-art" style="${grad(g.tone)}">
           ${g.img ? `<img class="gi-img" src="${g.img}" alt="${g.title}" loading="lazy" decoding="async">` : ''}
-        </div>
-        <div class="gi-mask">
-          <div class="gi-title">${g.title}</div>
-          <div class="gi-sub">${g.sub}</div>
         </div>
       </div>`).join('');
 
@@ -204,7 +209,7 @@
 
   function openLightbox(i) {
     galleryIndex = i;
-    const g = GALLERY[i];
+    const g = src('GALLERY')[i];
     const lb = $('#lightbox');
     if (g.img) {
       $('#lbArt').classList.add('has-img');
@@ -231,19 +236,33 @@
   }
 
   function stepLightbox(d) {
-    galleryIndex = (galleryIndex + d + GALLERY.length) % GALLERY.length;
+    const n = src('GALLERY').length;
+    galleryIndex = (galleryIndex + d + n) % n;
     openLightbox(galleryIndex);
   }
 
   /* ================= 渲染：平台直达 ================= */
   const PLAT_EN = { 'QQ音乐': 'QQ MUSIC', '网易云音乐': 'NETEASE MUSIC', '酷狗音乐': 'KUGOU MUSIC', '微博': 'WEIBO' };
   function renderPlatforms() {
-    $('#platformGrid').innerHTML = PLATFORMS.map(p => `
+    $('#platformGrid').innerHTML = src('PLATFORMS').map(p => `
       <a class="contact-card reveal" href="${p.url}" target="_blank" rel="noopener noreferrer nofollow">
         <span class="cc-name">${p.name}</span>
         <span class="cc-en">${PLAT_EN[p.name] || ''}</span>
         <span class="cc-arrow">前往 →</span>
       </a>`).join('');
+    const fl = $('#footerPlatLinks');
+    if (fl) fl.innerHTML = src('PLATFORMS').map(p =>
+      `<a href="${p.url}" target="_blank" rel="noopener noreferrer nofollow">${p.name} →</a>`).join('');
+  }
+
+  /* ================= 渲染：关键词跑马灯 ================= */
+  function renderMarquee() {
+    const track = $('#marqueeTrack');
+    if (!track) return;
+    const P = src('PROFILE');
+    const words = (P && P.tags && P.tags.length ? P.tags : ['流行 Pop', 'R&B', '爵士 Jazz', '灵魂乐 Soul', '海豚音', 'OST 女王']);
+    const seq = words.map(w => `<span class="mq-item">${w}</span><i class="mq-dot">✦</i>`).join('');
+    track.innerHTML = seq + seq; // 复制一份实现无缝循环
   }
 
   /* ================= 滚动显现 ================= */
@@ -312,6 +331,54 @@
     });
   }
 
+  /* ================= 界面设置（管理端可编辑） ================= */
+  const SECTION_IDS = ['news', 'profile', 'journey', 'music', 'tour', 'awards', 'screen', 'gallery', 'contact'];
+  function applyUi() {
+    let ui = (window.JANEZ_DATA && JANEZ_DATA.getUiMerged) ? JANEZ_DATA.getUiMerged() : {};
+    const root = document.documentElement;
+    // 主题
+    if (ui.theme) root.setAttribute('data-theme', ui.theme);
+    // 主色
+    if (ui.accent) root.style.setProperty('--accent', ui.accent);
+    // 字号
+    if (ui.fontScale && ui.fontScale !== 100) root.style.fontSize = (16 * ui.fontScale / 100) + 'px';
+    // 板块显隐
+    if (ui.visibleSections) {
+      SECTION_IDS.forEach(id => {
+        const sec = document.getElementById(id);
+        if (!sec) return;
+        const show = ui.visibleSections[id] !== false;
+        sec.style.display = show ? '' : 'none';
+      });
+    }
+    // 文案覆盖
+    if (ui.texts && typeof ui.texts === 'object') {
+      if (ui.texts.heroQuote) { const el = $('.hero-quote'); if (el) el.textContent = '“' + ui.texts.heroQuote + '”'; }
+      const secDesc = { news: '#news .sh-desc', profile: '#profile .sh-desc', music: '#music .sh-desc', awards: '#awards .sh-desc' };
+      Object.keys(secDesc).forEach(k => { if (ui.texts[k + 'Desc']) { const el = $(secDesc[k]); if (el) el.textContent = ui.texts[k + 'Desc']; } });
+    }
+  }
+
+  /* ================= 导航登录/管理入口 ================= */
+  function syncAuthEntry() {
+    const link = $('#navAuth');
+    if (!link) return;
+    const A = window.JANEZ_AUTH;
+    const s = A ? A.currentSession() : null;
+    if (s && s.role === 'admin') {
+      link.innerHTML = '<em>Admin</em>管理 · ' + s.user;
+      link.setAttribute('href', 'admin.html');
+      link.classList.add('is-admin');
+    } else if (s) {
+      link.innerHTML = '<em>Hi</em>' + s.user;
+      link.setAttribute('href', 'login.html');
+    } else {
+      link.innerHTML = '<em>Account</em>登录';
+      link.setAttribute('href', 'login.html');
+      link.classList.remove('is-admin');
+    }
+  }
+
   /* ================= 灯箱事件 ================= */
   function initLightbox() {
     $('.lb-close').addEventListener('click', closeLightbox);
@@ -342,6 +409,7 @@
     renderScreen();
     renderGallery();
     renderPlatforms();
+    renderMarquee();
 
     // 筛选
     $('#albumFilter').addEventListener('click', e => {
@@ -362,6 +430,8 @@
     initNav();
     initTheme();
     initLightbox();
+    applyUi();
+    syncAuthEntry();
     observeReveal();
 
     $('#toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
