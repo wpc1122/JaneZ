@@ -761,13 +761,30 @@ html[data-theme="light"] .hero-photo-overlay {
 
 /* ============ 登录 / 注册 页 ============ */
 .auth-body {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; min-height: 100vh; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
   background:
     radial-gradient(ellipse at 20% 0%, var(--accent-soft), transparent 55%),
     radial-gradient(ellipse at 85% 100%, var(--gold-soft), transparent 55%),
     var(--bg);
   padding: 60px 20px;
 }
+
+/* 背景图片轮播层（全屏铺底，淡入淡出） */
+.auth-carousel { position: absolute; inset: 0; z-index: 0; }
+.auth-carousel .cslide {
+  position: absolute; inset: 0; background-size: cover; background-position: center;
+  opacity: 0; transition: opacity 1.4s ease-in-out; will-change: opacity;
+}
+.auth-carousel .cslide.on { opacity: 1; }
+.auth-carousel-dim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(10,8,18,.72) 0%, rgba(10,8,18,.5) 45%, rgba(10,8,18,.82) 100%),
+    radial-gradient(ellipse at center, transparent 40%, rgba(10,8,18,.55) 100%);
+}
+/* 内容层置于轮播之上 */
+.auth-wrap { position: relative; z-index: 2; }
 .auth-wrap { width: 100%; max-width: 420px; text-align: center; }
 .auth-brand { display: flex; flex-direction: column; margin-bottom: 28px; }
 .auth-brand .brand-cn { font-size: 34px; letter-spacing: .24em; margin-right: -.24em; font-weight: 300; }
@@ -806,8 +823,36 @@ html[data-theme="light"] .hero-photo-overlay {
 .auth-submit:disabled { opacity: .6; cursor: wait; }
 .auth-tip { font-size: 12px; color: var(--muted); line-height: 1.7; margin-top: 18px; text-align: left; }
 .auth-link { color: var(--accent); text-decoration: underline; }
-.auth-back { display: inline-block; margin-top: 24px; font-size: 13px; color: var(--muted); transition: .2s; }
+.auth-back { display: inline-block; margin-top: 24px; font-size: 13px; color: var(--muted); transition: .2s; position: relative; z-index: 2; }
 .auth-back:hover { color: var(--text); }
+
+/* 卡片玻璃拟态：铺在图片背景上更精致 */
+.auth-card {
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+}
+
+/* ===== 已登录账号卡（登录后替代表单） ===== */
+.acc-card { text-align: center; padding: 34px 30px; }
+.acc-avatar {
+  width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 12px;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  color: #14110a; font-weight: 700; font-size: 34px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px var(--accent-soft);
+}
+.acc-hello { font-size: 13px; color: var(--muted); letter-spacing: .2em; }
+.acc-name { font-size: 26px; font-weight: 700; margin: 4px 0 2px; }
+.acc-role { font-size: 13px; color: var(--muted); }
+.acc-role.is-admin { color: var(--gold); }
+.acc-facts { display: flex; gap: 10px; margin: 18px 0; }
+.acc-fact {
+  flex: 1; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px 10px; text-align: left;
+}
+.acc-fact span { display: block; font-size: 11px; color: var(--muted); letter-spacing: .08em; }
+.acc-fact b { font-size: 14px; font-weight: 600; margin-top: 3px; display: block; }
 
 /* 导航登录入口（管理员态） */
 #navAuth.is-admin em { color: var(--gold); }
@@ -830,6 +875,10 @@ html[data-theme="light"] .hero-photo-overlay {
   border-radius: 10px; border: 1px solid var(--border);
   background: var(--surface-2); color: var(--text); cursor: pointer; transition: .2s var(--ease);
 }
+.lgd-btn.primary {
+  background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600;
+}
+.lgd-btn.primary:hover { filter: brightness(1.12); }
 .lgd-btn:hover { border-color: var(--border-strong); transform: translateY(-1px); }
 .lgd-btn.danger { color: #ff6b6b; border-color: rgba(255,107,107,.3); }
 .lgd-btn.danger:hover { background: rgba(255,107,107,.12); border-color: rgba(255,107,107,.5); }

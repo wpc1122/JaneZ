@@ -11,34 +11,47 @@
 </head>
 <body class="auth-body">
 
+<!-- ===== 背景：张靓颖图片轮播（全屏铺底） ===== -->
+<div class="auth-carousel" aria-hidden="true">
+  <div class="cslide" style="background-image:url('assets/img/hero.jpg')"></div>
+  <div class="cslide" style="background-image:url('assets/img/gallery-1.jpg')"></div>
+  <div class="cslide" style="background-image:url('assets/img/gallery-3.jpg')"></div>
+  <div class="cslide" style="background-image:url('assets/img/gallery-5.jpg')"></div>
+  <div class="cslide" style="background-image:url('assets/img/gallery-7.jpg')"></div>
+  <div class="cslide" style="background-image:url('assets/img/gallery-9.jpg')"></div>
+</div>
+<!-- 深色遮罩 + 顶部渐隐，保证文字对比度 -->
+<div class="auth-carousel-dim" aria-hidden="true"></div>
+
 <div class="auth-wrap">
   <a class="auth-brand" href="index.html">
     <span class="brand-cn">张靓颖</span>
     <span class="brand-en">JANE&nbsp;ZHANG</span>
   </a>
 
-  <!-- 已登录账号状态条（仅已登录时显示，提供「切换账号 / 退出」入口） -->
-  <div class="auth-card lgd-strip" id="authLoggedCard" style="display:none">
-    <div class="lgd-head">
-      <span class="lgd-avatar" id="lgdAvatar">?</span>
-      <div>
-        <div class="lgd-name" id="lgdName">—</div>
-        <div class="lgd-role" id="lgdRole">普通用户</div>
-      </div>
+  <!-- ===== 已登录账号卡（登录后只显示它，隐藏表单） ===== -->
+  <div class="auth-card acc-card" id="authLoggedCard" style="display:none">
+    <div class="acc-avatar" id="lgdAvatar">?</div>
+    <div class="acc-hello">你好</div>
+    <div class="acc-name" id="lgdName">—</div>
+    <div class="acc-role" id="lgdRole">普通用户</div>
+
+    <div class="acc-facts">
+      <div class="acc-fact"><span>权限</span><b id="lgdPerm">只读浏览</b></div>
+      <div class="acc-fact"><span>类型</span><b id="lgdType">注册用户</b></div>
     </div>
+
     <div class="lgd-actions">
-      <a class="btn lgd-btn" href="index.html">查看主站</a>
-      <a class="btn lgd-btn" href="user.html">我的账号 / 提建议</a>
-      <a class="btn lgd-btn" id="lgdAdminBtn" href="admin.html" style="display:none">进入管理端</a>
+      <a class="btn lgd-btn primary" href="index.html">进入主站</a>
+      <a class="btn lgd-btn" href="user.html">我的账号 · 提建议</a>
+      <a class="btn lgd-btn" id="lgdAdminBtn" href="admin.html" style="display:none">管理端</a>
       <button class="btn lgd-btn" id="lgdSwitch">切换账号</button>
       <button class="btn lgd-btn danger" id="lgdLogout">退出登录</button>
     </div>
   </div>
 
-  <!-- 登录 / 注册表单（始终可见，保证登录按钮永远可用） -->
+  <!-- ===== 登录 / 注册表单（未登录显示） ===== -->
   <div class="auth-card" id="authFormCard">
-    <h3 class="u-sug-title" id="formTitle">登录 / 注册</h3>
-    <p class="auth-tip" id="formHint" style="margin:0 0 14px">输入账号口令登录，或注册新账号（仅存于本机浏览器）。</p>
     <div class="auth-tabs" role="tablist">
       <button class="auth-tab active" data-tab="login" role="tab">登录</button>
       <button class="auth-tab" data-tab="register" role="tab">注册</button>
@@ -68,14 +81,14 @@
 
   <!-- 运行时兜底诊断：组件未就绪时给出明确提示与「强制刷新」入口 -->
   <div class="auth-diag" id="authDiag" style="display:none">
-    <span>⚠ 登录组件未加载完成，可能未点击有效。请强制刷新后再试。</span>
-    <button class="btn lgd-btn" id="authDiagReload" type="button">强制刷新（Ctrl+F5）</button>
+    <span>⚠ 登录组件未加载完成，请强制刷新后再试。</span>
+    <button class="btn lgd-btn" id="authDiagReload" type="button">强制刷新</button>
   </div>
 
   <a class="auth-back" href="index.html">← 返回主页</a>
 </div>
 
-<script src="assets/js/auth.js?v=4"></script>
-<script src="assets/js/auth-page.js?v=4"></script>
+<script src="assets/js/auth.js?v=5"></script>
+<script src="assets/js/auth-page.js?v=5"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* 登录 / 注册 页逻辑（表单常驻 + 已登录状态条 + 运行时兜底诊断） */
+/* 登录 / 注册 页逻辑（背景轮播 + 登录后隐藏表单 + 运行时兜底诊断） */
 (function () {
   'use strict';
   const A = window.JANEZ_AUTH;
@@ -10,20 +10,35 @@
   const submitBtn = $('authSubmit');
   const pass2Wrap = $('authPass2Wrap');
   const pass2Input = $('authPass2');
-  const formHint = $('formHint');
 
   const loggedCard = $('authLoggedCard');
+  const formCard = $('authFormCard');
   const lgdName = $('lgdName');
   const lgdRole = $('lgdRole');
   const lgdAvatar = $('lgdAvatar');
   const lgdAdminBtn = $('lgdAdminBtn');
   const lgdLogout = $('lgdLogout');
   const lgdSwitch = $('lgdSwitch');
+  const lgdPerm = $('lgdPerm');
+  const lgdType = $('lgdType');
 
   const diag = $('authDiag');
   const diagReload = $('authDiagReload');
 
   let mode = 'login';
+
+  /* ---------- 背景轮播：淡入淡出切换（仅当前张 .on 可见） ---------- */
+  function initCarousel() {
+    const slides = Array.from(document.querySelectorAll('.cslide'));
+    if (slides.length < 2) return;
+    let cur = 0;
+    slides.forEach((s, i) => s.classList.toggle('on', i === 0));
+    setInterval(() => {
+      slides[cur].classList.remove('on');
+      cur = (cur + 1) % slides.length;
+      slides[cur].classList.add('on');
+    }, 5000);
+  }
 
   function showMsg(text, isErr) {
     if (!msg) return;
@@ -32,15 +47,15 @@
     msg.classList.toggle('ok', !!text && !isErr);
   }
 
-  /* ---------- 运行时兜底：若账号层 auth.js 未加载成功 ----------
-     不静默崩溃——显示诊断条 + 强制刷新按钮，并让表单点击有明确反馈 ---------- */
+  /* ---------- 运行时兜底：账号层未加载成功时给明确反馈 ---------- */
   const authReady = A && typeof A.verify === 'function' && typeof A.register === 'function';
   if (!authReady) {
+    initCarousel();
     if (diag) diag.style.display = '';
     if (diagReload) diagReload.addEventListener('click', () => location.reload());
     if (form) form.addEventListener('submit', e => {
       e.preventDefault();
-      showMsg('登录组件未就绪，请先点上方「强制刷新」再试。', true);
+      showMsg('登录组件未就绪，请先点「强制刷新」再试。', true);
     });
     return;
   }
@@ -61,38 +76,40 @@
   }
   tabs.forEach(t => t.addEventListener('click', () => setMode(t.dataset.tab)));
 
-  /* ---------- 已登录：显示状态条（表单常驻，不再整块隐藏，保证登录按钮始终可用） ---------- */
+  /* ---------- 显示 / 隐藏 卡片（登录后隐藏表单，只留账号卡） ---------- */
   function showLogged() {
     const s = A.currentSession();
-    if (!s) return;
+    if (!s) { loggedCard.style.display = 'none'; formCard.style.display = ''; return; }
     loggedCard.style.display = '';
+    formCard.style.display = 'none';              // 登录成功后去掉下方登录框
     lgdName.textContent = s.user;
     lgdAvatar.textContent = s.user.slice(0, 1).toUpperCase();
     const isAdmin = s.role === 'admin';
     lgdRole.textContent = isAdmin ? '网站管理员' : '普通用户（只读）';
     lgdRole.classList.toggle('is-admin', isAdmin);
+    lgdPerm.textContent = isAdmin ? '全部编辑' : '只读浏览';
+    lgdType.textContent = s.builtin ? '内置管理员' : '注册用户';
     lgdAdminBtn.style.display = isAdmin ? '' : 'none';
-    if (formHint) formHint.textContent = '当前已登录为「' + s.user + '」。可切换到其它账号或退出。';
   }
-  showLogged();
 
-  /* 切换账号：清本机会话，回到表单重新登录 */
+  /* 切换账号：清会话，重新展示登录表单 */
   lgdSwitch.addEventListener('click', () => {
     A.logout();
-    loggedCard.style.display = 'none';
     ['authUser', 'authPass', 'authPass2'].forEach(id => { const el = $(id); if (el) el.value = ''; });
     setMode('login');
+    showLogged();
     showMsg('已切换，请输入要登录的账号。', false);
-    $('authUser').focus();
+    const u = $('authUser'); if (u) u.focus();
   });
 
-  /* 退出：清本机会话，表单保留可重新登录 */
+  /* 退出：清会话，重新展示登录表单 */
   lgdLogout.addEventListener('click', () => {
     A.logout();
-    loggedCard.style.display = 'none';
-    if (formHint) formHint.textContent = '已退出登录，可重新登录。';
+    showLogged();
     showMsg('已退出登录', false);
   });
+
+  showLogged();
 
   /* ---------- 登录 / 注册 提交（监听器无条件绑定，按钮永远有效） ---------- */
   form.addEventListener('submit', async (e) => {
@@ -134,4 +151,6 @@
     }
     restore();
   });
+
+  initCarousel();
 })();
