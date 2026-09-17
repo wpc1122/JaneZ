@@ -56,6 +56,9 @@
         <span class="fact-k">${f.k}</span>
         <span class="fact-v">${f.v}</span>
       </div>`).join('');
+    // 头像加载失败时移除，露出底层渐变字牌
+    const av = $('.avatar-img');
+    if (av) av.addEventListener('error', () => av.remove(), { once: true });
   }
 
   /* ================= 渲染：星路历程 ================= */
@@ -175,7 +178,9 @@
   function renderGallery() {
     $('#galleryGrid').innerHTML = GALLERY.map((g, i) => `
       <div class="gallery-item reveal" data-i="${i}" style="animation-delay:${i * 50}ms">
-        <div class="gi-art" style="${grad(g.tone)}"></div>
+        <div class="gi-art" style="${grad(g.tone)}">
+          ${g.img ? `<img class="gi-img" src="${g.img}" alt="${g.title}" loading="lazy" decoding="async">` : ''}
+        </div>
         <div class="gi-mask">
           <div class="gi-title">${g.title}</div>
           <div class="gi-sub">${g.sub}</div>
@@ -185,13 +190,35 @@
     $$('#galleryGrid .gallery-item').forEach(el => {
       el.addEventListener('click', () => openLightbox(Number(el.dataset.i)));
     });
+
+    // 图片加载完成后渐显；失败时移除，露出底层渐变兜底
+    $$('#galleryGrid .gi-img').forEach(img => {
+      const done = () => img.classList.add('ready');
+      if (img.complete && img.naturalWidth > 0) done();
+      else {
+        img.addEventListener('load', done, { once: true });
+        img.addEventListener('error', () => img.remove(), { once: true });
+      }
+    });
   }
 
   function openLightbox(i) {
     galleryIndex = i;
     const g = GALLERY[i];
     const lb = $('#lightbox');
-    $('#lbArt').setAttribute('style', grad(g.tone));
+    if (g.img) {
+      $('#lbArt').classList.add('has-img');
+      const im = document.createElement('img');
+      im.className = 'lb-img';
+      im.src = g.img;
+      im.alt = g.title;
+      im.addEventListener('error', () => im.remove(), { once: true });
+      $('#lbArt').replaceChildren(im);
+    } else {
+      $('#lbArt').classList.remove('has-img');
+      $('#lbArt').setAttribute('style', grad(g.tone));
+      $('#lbArt').replaceChildren();
+    }
     $('#lbTitle').textContent = g.title;
     $('#lbSub').textContent = g.sub;
     lb.classList.add('show');
@@ -212,7 +239,7 @@
   const PLAT_EN = { 'QQ音乐': 'QQ MUSIC', '网易云音乐': 'NETEASE MUSIC', '酷狗音乐': 'KUGOU MUSIC', '微博': 'WEIBO' };
   function renderPlatforms() {
     $('#platformGrid').innerHTML = PLATFORMS.map(p => `
-      <a class="contact-card reveal" href="${p.url}" target="_blank" rel="noopener">
+      <a class="contact-card reveal" href="${p.url}" target="_blank" rel="noopener noreferrer nofollow">
         <span class="cc-name">${p.name}</span>
         <span class="cc-en">${PLAT_EN[p.name] || ''}</span>
         <span class="cc-arrow">前往 →</span>

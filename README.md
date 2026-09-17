@@ -6,12 +6,15 @@
 
 ```
 zhangliangying/
-├── index.html              # 主页面（单页锚点导航）
+├── index.html              # 主页面（单页锚点导航，含 CSP 安全头）
 ├── assets/
 │   ├── css/style.css       # 全部样式（含深浅两套主题变量）
+│   ├── img/                # 照片素材（hero / avatar / gallery-1~9）
 │   └── js/
 │       ├── data.js         # 数据层：所有人物资料都在这里，改内容只需改这一个文件
 │       └── main.js         # 渲染与交互逻辑
+├── .nojekyll               # 禁用 GitHub Pages 的 Jekyll 处理
+├── .gitignore
 └── README.md
 ```
 
@@ -54,14 +57,29 @@ python -m http.server 8123
 
 如有资料更新，直接编辑 `assets/js/data.js` 中对应数组即可，页面会自动重新渲染。
 
+## 部署
+
+已部署于 GitHub Pages：**https://wpc1122.github.io/JaneZ/**
+
+仓库：`wpc1122/JaneZ`（`main` 分支根目录为站点根，已含 `.nojekyll`）。
+
+## 安全加固
+
+- **内容安全策略（CSP）**：`index.html` 通过 meta 声明 `script-src 'self'` 等策略，仅允许同源脚本与样式、禁止内联脚本与 `eval`，可阻断注入型 XSS。
+- **无外部依赖**：不加载任何第三方 CDN 脚本/字体，全部资源同源，杜绝供应链投毒与 SRI 问题。
+- **外链加固**：站外链接统一 `rel="noopener noreferrer nofollow"`，防 tab-nabbing 且不泄露来源。
+- **Referrer 策略**：`strict-origin-when-cross-origin`。
+- **图片兜底**：任意图片加载失败自动移除并回退到渐变视觉，不产生裸的坏图。
+- 仓库通过扫描确认无密钥/令牌、无 `eval`/`document.write`、无内联事件处理器。
+
 ## 关于图片
 
-为避免肖像版权与外链失效问题，站点内所有封面、头像、图集均采用 CSS/SVG 生成的渐变视觉，不依赖任何外部图片。
+站点照片位于 `assets/img/`（共 11 张，均已压缩：首屏 1920px、图集 1400px、头像 900px 方图，合计约 1.2MB）：
 
-如需替换为真实照片：
+- `hero.jpg` — 首屏背景（加载失败自动回退为渐变 + 光斑背景）
+- `avatar.jpg` — 档案头像（方图）
+- `gallery-1.jpg` ~ `gallery-9.jpg` — 图集九宫格，点击可查看大图
 
-1. 把图片放入 `assets/img/`（例如 `album-01.jpg`、`gallery-01.jpg`）；
-2. 在 `data.js` 对应条目里增加一个 `img` 字段；
-3. 在 `main.js` 对应渲染函数中，把 `.ac-art` / `.gi-art` 的渐变容器换成 `<img src="...">` 即可。
+替换照片：直接覆盖 `assets/img/` 下同名文件即可；新增图集项在 `data.js` 的 `GALLERY` 中加 `img` 字段。
 
-使用真实艺人照片前，请确认已获得相应授权。
+使用真实艺人照片请确认已获得相应授权；本站为粉丝向资料整理站点，图片版权归原作者所有。

@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 安全加固：内容安全策略，仅允许同源脚本/样式/图片，禁止内联脚本与危险对象 -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>张靓颖 Jane Zhang · 官方资料站</title>
 <meta name="description" content="张靓颖（Jane Zhang）官方资料站 — 个人档案、音乐作品、影视金曲、巡回演唱会、荣誉记录与最新动态。">
 <link rel="stylesheet" href="assets/css/style.css">
@@ -51,6 +54,8 @@
 <!-- ============ 首屏 ============ -->
 <section id="hero">
   <div class="hero-bg">
+    <img class="hero-photo" src="assets/img/hero.jpg" alt="张靓颖舞台现场" fetchpriority="high" decoding="async">
+    <div class="hero-photo-overlay"></div>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
@@ -112,6 +117,7 @@
             <span class="av-cn">张靓颖</span>
             <span class="av-en">JANE ZHANG</span>
           </div>
+          <img class="avatar-img" src="assets/img/avatar.jpg" alt="张靓颖" decoding="async">
         </div>
         <div class="pc-meta">
           <h3 class="pc-name">张靓颖</h3>
@@ -242,7 +248,7 @@
       <p class="sh-desc">点击卡片查看舞台记忆</p>
     </div>
     <div class="gallery-grid" id="galleryGrid"></div>
-    <p class="gallery-note">※ 图集为版式示意，实际图片素材请替换 <code>assets/img/</code> 目录下同名文件。</p>
+    <p class="gallery-note">※ 图片仅作粉丝展示用途，版权归原权利人所有；点击卡片可查看大图。</p>
   </div>
 </section>
 

@@ -389,13 +389,13 @@ const PLATFORMS = [
 
 /* ---------- 11. 图集（光影瞬间） ---------- */
 const GALLERY = [
-  { title: '「追」世界巡回演唱会', sub: '2025 — 至今', tone: 0 },
-  { title: '「光」世界巡回演唱会', sub: '2023 — 2024', tone: 1 },
-  { title: '珍相 Jane\'s Secret', sub: '2018 世界巡演', tone: 2 },
-  { title: 'TMEA 腾讯音乐娱乐盛典', sub: '2026 年度女歌手', tone: 3 },
-  { title: '央视春晚舞台', sub: '2013 / 2014 / 2026', tone: 4 },
-  { title: 'Past Progressive', sub: '2019 全英文专辑', tone: 5 },
-  { title: '维多利亚的秘密时尚秀', sub: '2017 首位亚洲歌手', tone: 6 },
-  { title: '格莱美红毯', sub: '2010 首位华人歌手', tone: 7 },
-  { title: '影视金曲之夜', sub: 'OST 女王', tone: 8 }
+  { title: '「追」世界巡回演唱会', sub: '2025 — 至今', tone: 0, img: 'assets/img/gallery-1.jpg' },
+  { title: '「光」世界巡回演唱会', sub: '2023 — 2024', tone: 1, img: 'assets/img/gallery-2.jpg' },
+  { title: '珍相 Jane\'s Secret', sub: '2018 世界巡演', tone: 2, img: 'assets/img/gallery-3.jpg' },
+  { title: 'TMEA 腾讯音乐娱乐盛典', sub: '2026 年度女歌手', tone: 3, img: 'assets/img/gallery-4.jpg' },
+  { title: '央视春晚舞台', sub: '2013 / 2014 / 2026', tone: 4, img: 'assets/img/gallery-5.jpg' },
+  { title: 'Past Progressive', sub: '2019 全英文专辑', tone: 5, img: 'assets/img/gallery-6.jpg' },
+  { title: '维多利亚的秘密时尚秀', sub: '2017 首位亚洲歌手', tone: 6, img: 'assets/img/gallery-7.jpg' },
+  { title: '格莱美红毯', sub: '2010 首位华人歌手', tone: 7, img: 'assets/img/gallery-8.jpg' },
+  { title: '影视金曲之夜', sub: 'OST 女王', tone: 8, img: 'assets/img/gallery-9.jpg' }
 ];
