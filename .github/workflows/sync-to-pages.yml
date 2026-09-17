@@ -1,0 +1,63 @@
+# ============================================================
+#  方案 A：源码私有 + 网站公开
+#  本文件放在【私有源仓库】(例如 wpc1122/JaneZ-source) 中。
+#  作用：每次推送到私有仓 main，自动把站点全量同步到公开仓
+#  wpc1122/JaneZ 的 main 分支；该公开仓已启用 GitHub Pages，
+#  从而「源码私有、成品公开」。
+#
+#  需要在本私有仓 Settings → Secrets → Actions 配置：
+#    SYNC_TOKEN  = 一个对公开仓 wpc1122/JaneZ 有【写权限】的 PAT
+#                  (fine-grained 或 classic 均可，权限 content: read/write)
+#
+#  提示：.github 目录不会进入公开仓（被 --exclude 排除），
+#  因此公开仓看不到本 workflow，也不含任何 secret。
+# ============================================================
+name: Sync to Public Pages Repo
+
+on:
+  push:
+    branches: [ main ]
+
+concurrency:
+  group: pages-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout source (private)
+        uses: actions/checkout@v4
+        with:
+          # 保留完整历史以便增量提交
+          fetch-depth: 1
+
+      - name: Mirror site into public Pages repo
+        env:
+          TOKEN: ${{ secrets.SYNC_TOKEN }}
+          PAGES_REPO: wpc1122/JaneZ
+          PAGES_BRANCH: main
+        run: |
+          set -e
+          # 1) 克隆公开仓最新 main
+          mkdir -p /tmp/pages && cd /tmp/pages
+          git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/${PAGES_REPO}.git" mirror
+          cd mirror
+          # 2) 清空现有站点文件（保留 .git）
+          git rm -r . >/dev/null 2>&1 || true
+          # 3) 从私有仓拷入站点文件，排除 .git / .github / 本 workflow
+          cd -
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            "$GITHUB_WORKSPACE/" /tmp/pages/mirror/
+          # 4) 提交并推送
+          cd /tmp/pages/mirror
+          git add -A
+          git -c user.name="janez-sync[bot]" \
+              -c user.email="janez-sync@users.noreply.github.com" \
+              commit -m "sync: 私有源码 → 公开 Pages ($(date -u +%Y-%m-%dT%H:%M:%SZ))" || echo "无变更，跳过提交"
+          git push "https://x-access-token:${TOKEN}@github.com/${PAGES_REPO}.git" HEAD:"${PAGES_BRANCH}"
+          echo "已同步到 ${PAGES_REPO}/${PAGES_BRANCH}"

@@ -78,6 +78,14 @@ body.adm-page { background: var(--bg); }
 .adm-toast.ok { border-color: rgba(122,201,160,.5); }
 .adm-toast.err { border-color: rgba(255,107,107,.5); }
 .auth-body .adm-top { position: static; margin: 0; }
+/* 用户建议列表 */
+.adm-sug-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+.adm-sug-empty { font-size: 13px; color: var(--muted); padding: 18px 0; }
+.adm-sug-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.adm-sug-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.adm-sug-meta .adm-sug-user { color: var(--text); font-weight: 600; }
+.adm-sug-body { font-size: 13.5px; line-height: 1.6; color: var(--text-2); white-space: pre-wrap; word-break: break-word; margin-bottom: 10px; }
+.adm-sug-actions { display: flex; gap: 8px; }
 @media (max-width: 820px) { .adm-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -98,6 +106,7 @@ body.adm-page { background: var(--bg); }
     <div class="adm-role active" data-r="ui">界面设置</div>
     <div class="adm-role" data-r="content">内容编辑</div>
     <div class="adm-role" data-r="accounts">账号管理</div>
+    <div class="adm-role" data-r="suggestions">用户建议</div>
   </div>
 
   <!-- 界面设置 -->
@@ -174,12 +183,26 @@ body.adm-page { background: var(--bg); }
     </div>
   </div>
 
+  <!-- 用户建议 -->
+  <div class="adm-panel" id="panel-suggestions">
+    <div class="adm-card">
+      <h3>用户建议</h3>
+      <p class="sub">已通过内容安全评控的用户反馈，可逐条删除、全部清空，或打包发邮件给 <b id="admSugMail">253324704@qq.com</b>。</p>
+      <div id="sugList" class="adm-sug-list"></div>
+      <div class="adm-actions">
+        <button class="btn" id="sugExportMail">打包发送至邮箱（预填）</button>
+        <button class="btn danger" id="sugClear">清空全部建议</button>
+      </div>
+      <p class="adm-note">提示：静态站无服务端，「发送至邮箱」为 mailto 预填草稿，点开后在邮箱客户端/网页邮箱确认发送即可。恶意内容在用户提交时已被拦截，不会出现在此处；若发现误入仍可手动删除。</p>
+    </div>
+  </div>
+
   <div class="adm-toast" id="admToast"></div>
 </div>
 
-<script src="assets/js/data.js?v=3"></script>
-<script src="assets/js/auth.js?v=3"></script>
-<script src="assets/js/data-bridge.js?v=3"></script>
-<script src="assets/js/admin.js?v=3"></script>
+<script src="assets/js/data.js?v=6"></script>
+<script src="assets/js/auth.js?v=6"></script>
+<script src="assets/js/data-bridge.js?v=6"></script>
+<script src="assets/js/admin.js?v=6"></script>
 </body>
 </html>

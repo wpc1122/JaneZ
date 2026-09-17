@@ -131,6 +131,50 @@
 
   /* ---------- 用户建议（任何登录用户可提交，仅管理员可读取） ---------- */
   const SUGGESTIONS_KEY = 'janez_suggestions';
+  /* 建议邮件直达地址（管理员收件箱）；改动仅在此处 */
+  const SUGGESTION_NOTIFY_EMAIL = '253324704@qq.com';
+
+  /* ---------- 建议内容评控（恶意发言禁止发布） ---------- */
+  const BAD_KEYWORDS = [
+    // 违法 / 灰产
+    '菠菜','赌博','代刷','刷单','刷粉','互粉','加粉','返利','代写','代考','套现','洗钱','走私','售枪','贩毒','私服','外挂','日赚','无风险','零风险','稳赚','庞氏','传销',
+    // 诈骗 / 引流
+    '转账','私聊','私加','加qq','加q','加微信','加v','威信','薇信','vx','扫码','收款','兼职','无抵押','解冻','注销','银行卡','四件套','开盒','人肉','公民信息',
+    // 色情 / 低俗
+    '色情','裸聊','约炮','嫖娼','援交','成人视频',
+    // 辱骂 / 人身攻击
+    '你妈','你爹','妈的','妈逼','傻逼','沙比','煞笔','滚蛋','滚粗','去死','找死','贱货','臭婊','婊子','狗东西','畜生','人渣','死全家','断子绝孙','搞死','弄死',
+    // 政治敏感（最小集）
+    '法轮','维尼','藏独','台独','港独','疆独',
+    // 针对性恶意抹黑
+    '滚出','封杀','黑你'
+  ];
+  const INJECTION_PATTERNS = [
+    /<\s*script/i, /<\s*iframe/i, /<\s*object/i, /<\s*embed/i, /<\s*img/i, /<\s*link/i,
+    /javascript\s*:/i, /onerror\s*=/i, /onload\s*=/i, /onclick\s*=/i, /onmouse/i,
+    /eval\s*\(/i, /document\.cookie/i, /document\.write/i, /srcdoc/i, /data\s*:\s*text/i,
+    /%3cscript/i, /%00/i
+  ];
+  function checkSuggestion(raw) {
+    const text = String(raw == null ? '' : raw).trim();
+    if (text.length < 4) return { ok: false, reason: '内容过短（至少 4 字）' };
+    if (text.length > 500) return { ok: false, reason: '内容过长（上限 500 字）' };
+    const norm = text.toLowerCase();
+    for (const k of BAD_KEYWORDS) {
+      if (norm.includes(k.toLowerCase()))
+        return { ok: false, reason: '内容包含被禁止的敏感/恶意词「' + k + '」，请修改后重新提交' };
+    }
+    for (const rx of INJECTION_PATTERNS) {
+      if (rx.test(text)) return { ok: false, reason: '内容包含疑似脚本 / 注入代码，已被安全策略拦截' };
+    }
+    const tel = (text.match(/1[3-9]\d{9}/g) || []).length;
+    const mail = (text.match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}/gi) || []).length;
+    const url = (text.match(/(https?:\/\/|www\.)/gi) || []).length;
+    if (mail >= 2) return { ok: false, reason: '内容包含多个邮箱，疑似广告，已被拦截' };
+    if (tel + mail + url >= 3) return { ok: false, reason: '内容包含过多联系方式 / 链接，疑似广告刷量，已被拦截' };
+    return { ok: true, reason: '' };
+  }
+
   function getSuggestions() {
     try { return JSON.parse(localStorage.getItem(SUGGESTIONS_KEY)) || []; }
     catch (e) { return []; }
@@ -138,21 +182,50 @@
   function addSuggestion(body) {
     const s = currentSession();
     if (!s) throw new Error('请先登录后再提交建议');
-    body = String(body || '').trim();
-    if (body.length < 4) throw new Error('建议内容至少 4 个字');
-    if (body.length > 500) throw new Error('建议内容过长（上限 500 字）');
+    const chk = checkSuggestion(body);
+    if (!chk.ok) throw new Error(chk.reason);
+    const text = String(body).trim();
     const list = getSuggestions();
     list.unshift({
       id: 'sg_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      user: s.user, ts: Date.now(), body
+      user: s.user, ts: Date.now(), body: text
     });
     localStorage.setItem(SUGGESTIONS_KEY, JSON.stringify(list.slice(0, 200)));
+    return true;
+  }
+  /* 删除单条建议（仅管理员） */
+  function deleteSuggestion(id) {
+    if (!isAdmin()) throw new Error('权限不足：仅网站管理员可删除建议');
+    const list = getSuggestions().filter(x => x.id !== id);
+    localStorage.setItem(SUGGESTIONS_KEY, JSON.stringify(list));
     return true;
   }
   function clearSuggestions() {
     if (!isAdmin()) throw new Error('权限不足：仅网站管理员可清空建议');
     localStorage.removeItem(SUGGESTIONS_KEY);
     return true;
+  }
+
+  /* ---------- 邮件直达（mailto 预填草稿，零密钥、原生可用） ---------- */
+  function mailtoHref(to, subject, bodyText) {
+    return 'mailto:' + to +
+      (subject ? '?subject=' + encodeURIComponent(subject) : '') +
+      (subject ? '&body=' : (bodyText ? '?body=' : '')) +
+      (bodyText ? encodeURIComponent(bodyText) : '');
+  }
+  /* 把单条建议转成预填邮件草稿 */
+  function suggestionMailto(user, body) {
+    const subject = '【网站建议】来自用户 ' + user;
+    const text = '提交账号：' + user + '\n提交时间：' + new Date().toLocaleString('zh-CN') +
+      '\n\n建议内容：\n' + body;
+    return mailtoHref(SUGGESTION_NOTIFY_EMAIL, subject, text);
+  }
+  /* 把管理端当前全部建议打包成一封邮件草稿 */
+  function allSuggestionsMailto(list) {
+    const rows = (list || []).map((x, i) =>
+      (i + 1) + '. [' + x.user + '] ' + new Date(x.ts).toLocaleString('zh-CN') + '\n   ' + x.body).join('\n\n');
+    const subject = '【网站建议】共 ' + (list || []).length + ' 条';
+    return mailtoHref(SUGGESTION_NOTIFY_EMAIL, subject, '以下为本站收到的全部用户建议：\n\n' + rows);
   }
 
   window.JANEZ_AUTH = {
@@ -163,6 +236,9 @@
     getUsers, deleteUser,
     BUILTIN_ADMIN,
     USERS_KEY, SESSION_KEY, CONTENT_KEY, THEME_KEY, SUGGESTIONS_KEY,
-    getSuggestions, addSuggestion, clearSuggestions
+    getSuggestions, addSuggestion, clearSuggestions,
+    SUGGESTION_NOTIFY_EMAIL,
+    checkSuggestion, deleteSuggestion,
+    suggestionMailto, allSuggestionsMailto
   };
 })();

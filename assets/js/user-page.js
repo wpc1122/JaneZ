@@ -34,26 +34,45 @@
     location.replace('login.html');
   });
 
-  /* ---------- 建议窗口 ---------- */
+  /* ---------- 建议窗口（评控 + 邮件直达 253324704@qq.com） ---------- */
   const sugMsg = $('#sugMsg');
+  const sugSend = $('#sugSend');
   const sugSubmit = $('#sugSubmit');
   $('#sugForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const body = $('#sugBody').value;
     sugMsg.textContent = ''; sugMsg.className = 'auth-msg';
+    sugSend.style.display = 'none';
     sugSubmit.disabled = true; sugSubmit.textContent = '提交中…';
     try {
-      A.addSuggestion(body);
+      A.addSuggestion(body);          // 内置恶意词/XSS/注入评控，命中直接抛错
       $('#sugBody').value = '';
-      sugMsg.textContent = '建议已提交，感谢你的反馈！';
+      sugMsg.textContent = '建议已通过内容安全审核，已保存到站内。';
       sugMsg.classList.add('ok');
+      sugSend.style.display = '';      // 显示「发送至邮箱」按钮
       renderSent();
     } catch (err) {
-      sugMsg.textContent = err.message;
+      sugMsg.textContent = err.message; // 评控/权限失败时展示原因
       sugMsg.classList.add('err');
     }
     sugSubmit.disabled = false; sugSubmit.textContent = '提交建议';
   });
+
+  /* 把刚才通过审核的那条建议，用 mailto 预填草稿发送到管理员邮箱 */
+  sugSend.addEventListener('click', (e) => {
+    e.preventDefault();
+    const sent = A.getSuggestions().filter(x => x.user === s.user);
+    if (!sent.length) return;
+    const latest = sent[0];
+    const url = A.suggestionMailto(latest.user, latest.body);
+    sugSend.href = url;          // 同步按钮 href，方便直接点
+    location.href = url;         // 触发打开默认邮箱客户端 / 网页邮箱
+  });
+  /* 默认收件邮箱文案（与 auth.js 单一来源一致） */
+  if (A.SUGGESTION_NOTIFY_EMAIL && $('#sugMail')) {
+    $('#sugMail').textContent = A.SUGGESTION_NOTIFY_EMAIL;
+    sugSend.textContent = '发送至 ' + A.SUGGESTION_NOTIFY_EMAIL + '（邮箱预填）';
+  }
 
   /* ---------- 查看我已提交的建议（仅本人可见） ---------- */
   function renderSent() {

@@ -53,6 +53,17 @@ zhangliangying/
 
 仓库：`wpc1122/JaneZ`（`main` 分支根目录为站点根，已含 `.nojekyll`）。
 
+## 源码私有 + 网站公开（方案 A）
+
+如需「源码仅自己可见、成品对外公开」，可在**私有源仓库**里启用随附的
+`.github/workflows/sync-to-pages.yml`：每次推送私有仓 `main`，自动把站点镜像到公开仓
+`wpc1122/JaneZ`，公开仓的 Pages 照常发布。
+
+- 一键配置步骤与故障排查见 **私有仓** 内的 `.github/DEPLOY-README.md`
+  （该文件与 workflow 通过 `--exclude=.github` 排除，不会同步到公开仓，不泄露任何 secret）。
+- 需要在私有仓 `Settings → Secrets` 配一个对公开仓有写权限的 `SYNC_TOKEN`。
+
+
 ## 安全加固
 
 - **内容安全策略（CSP）**：`index.html` 通过 meta 声明 `script-src 'self'` 等策略，仅允许同源脚本与样式、禁止内联脚本与 `eval`，可阻断注入型 XSS。
