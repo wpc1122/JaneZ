@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /login.html
+Disallow: /user.html
+Disallow: /admin.html
+
+Sitemap: https://wpc1122.github.io/JaneZ/sitemap.xml

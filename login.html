@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex,nofollow">
 <title>登录 / 注册 · 张靓颖资料站</title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -16,7 +17,8 @@
     <span class="brand-en">JANE&nbsp;ZHANG</span>
   </a>
 
-  <div class="auth-card" id="authLoggedCard" style="display:none">
+  <!-- 已登录账号状态条（仅已登录时显示，提供「切换账号 / 退出」入口） -->
+  <div class="auth-card lgd-strip" id="authLoggedCard" style="display:none">
     <div class="lgd-head">
       <span class="lgd-avatar" id="lgdAvatar">?</span>
       <div>
@@ -24,22 +26,25 @@
         <div class="lgd-role" id="lgdRole">普通用户</div>
       </div>
     </div>
-    <p class="auth-tip" style="margin:14px 0">当前登录账号拥有对应权限。管理员可进入管理端编辑与查看建议。</p>
     <div class="lgd-actions">
       <a class="btn lgd-btn" href="index.html">查看主站</a>
       <a class="btn lgd-btn" href="user.html">我的账号 / 提建议</a>
       <a class="btn lgd-btn" id="lgdAdminBtn" href="admin.html" style="display:none">进入管理端</a>
+      <button class="btn lgd-btn" id="lgdSwitch">切换账号</button>
       <button class="btn lgd-btn danger" id="lgdLogout">退出登录</button>
     </div>
   </div>
 
+  <!-- 登录 / 注册表单（始终可见，保证登录按钮永远可用） -->
   <div class="auth-card" id="authFormCard">
+    <h3 class="u-sug-title" id="formTitle">登录 / 注册</h3>
+    <p class="auth-tip" id="formHint" style="margin:0 0 14px">输入账号口令登录，或注册新账号（仅存于本机浏览器）。</p>
     <div class="auth-tabs" role="tablist">
       <button class="auth-tab active" data-tab="login" role="tab">登录</button>
       <button class="auth-tab" data-tab="register" role="tab">注册</button>
     </div>
 
-    <form id="authForm" class="auth-form" autocomplete="on">
+    <form id="authForm" class="auth-form" autocomplete="on" novalidate>
       <label class="auth-field">
         <span>用户名</span>
         <input type="text" id="authUser" name="user" required placeholder="用户名" autocomplete="username">
@@ -50,22 +55,27 @@
       </label>
       <label class="auth-field" id="authPass2Wrap" style="display:none">
         <span>确认口令</span>
-        <input type="password" id="authPass2" name="pass2" required placeholder="再次输入口令" autocomplete="new-password">
+        <input type="password" id="authPass2" name="pass2" placeholder="再次输入口令" autocomplete="new-password">
       </label>
       <div class="auth-msg" id="authMsg" role="alert"></div>
       <button type="submit" class="auth-submit" id="authSubmit">登 录</button>
     </form>
 
-    <p class="auth-tip">
-      本站为静态站，账号与口令存于你的浏览器本地，口令经哈希加密后保存、不存明文。
-      管理员可前往 <a href="admin.html" class="auth-link">管理端</a>。
+    <p class="auth-tip auth-tip-sec">
+      口令经哈希加密存于本机、不存明文。<a href="admin.html" class="auth-link">管理端</a> 仅管理员可进入。
     </p>
+  </div>
+
+  <!-- 运行时兜底诊断：组件未就绪时给出明确提示与「强制刷新」入口 -->
+  <div class="auth-diag" id="authDiag" style="display:none">
+    <span>⚠ 登录组件未加载完成，可能未点击有效。请强制刷新后再试。</span>
+    <button class="btn lgd-btn" id="authDiagReload" type="button">强制刷新（Ctrl+F5）</button>
   </div>
 
   <a class="auth-back" href="index.html">← 返回主页</a>
 </div>
 
-<script src="assets/js/auth.js?v=3"></script>
-<script src="assets/js/auth-page.js?v=3"></script>
+<script src="assets/js/auth.js?v=4"></script>
+<script src="assets/js/auth-page.js?v=4"></script>
 </body>
 </html>
