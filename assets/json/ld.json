@@ -2,13 +2,30 @@
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "MusicGroup",
+      "@type": "Person",
       "@id": "https://wpc1122.github.io/JaneZ/#janezhang",
       "name": "张靓颖",
-      "alternateName": "Jane Zhang",
-      "description": "中国内地流行乐女歌手、词曲作者、音乐制作人，被誉为「OST 女王」，2005 年凭借《天下无双》出道，首位亮相格莱美音乐颁奖典礼的华人歌手。",
+      "alternateName": ["Jane Zhang", "井姐", "海豚公主"],
+      "description": "中国内地流行乐女歌手、词曲作者、音乐制作人，被誉为「OST 女王」，2005 年《超级女声》全国季军出道，代表作《画心》《如果这就是爱情》《终于等到你》《野心家》，首位亮相并三度登上格莱美红毯的华人歌手。",
+      "birthDate": "1984-10-11",
+      "gender": "female",
+      "nationality": "中国",
+      "jobTitle": "歌手 / 词曲作者 / 音乐制作人",
+      "alumniOf": { "@type": "CollegeOrUniversity", "name": "四川大学外国语学院" },
       "inLanguage": ["zh-Hans", "en"],
-      "genre": ["流行", "Pop", "R&B", "Jazz"],
+      "genre": ["流行 Pop", "R&B", "Jazz", "灵魂乐 Soul", "影视OST"],
+      "knownFor": ["画心", "如果这就是爱情", "终于等到你", "天下无双", "野心家", "808"],
+      "award": [
+        "第28届香港电影金像奖最佳原创电影歌曲",
+        "第七届TMEA年度女歌手（2026）",
+        "Mnet亚洲音乐大奖亚洲最佳歌手（2011）",
+        "专辑《改变》获IFPI双倍白金唱片认证"
+      ],
+      "sameAs": [
+        "https://weibo.com/zhangliangying",
+        "https://y.qq.com/n/ryqq/search?w=%E5%BC%A0%E9%9D%93%E9%A2%96",
+        "https://music.163.com/#/search/m/?s=%E5%BC%A0%E9%9D%93%E9%A2%96"
+      ],
       "url": "https://wpc1122.github.io/JaneZ/"
     },
     {
@@ -17,7 +34,8 @@
       "url": "https://wpc1122.github.io/JaneZ/",
       "name": "张靓颖 Jane Zhang · 资料站",
       "inLanguage": "zh-CN",
-      "publisher": { "@type": "Person", "name": "JaneZ 资料站" }
+      "description": "张靓颖（Jane Zhang）粉丝资料站：个人档案、音乐专辑、影视金曲 OST、世界巡回演唱会、荣誉记录与 2025–2026 最新动态。",
+      "publisher": { "@type": "Organization", "name": "JaneZ 资料站" }
     },
     {
       "@type": "BreadcrumbList",
