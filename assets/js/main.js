@@ -1,5 +1,5 @@
 /* ============================================================
- *  张靓颖 Jane Zhang · 官方资料站 — 交互逻辑
+ *  张靓颖 Jane Zhang · 资料站 — 交互逻辑
  * ============================================================ */
 (function () {
   'use strict';
@@ -331,7 +331,7 @@
     });
   }
 
-  /* ================= 界面设置（管理端可编辑） ================= */
+  /* ================= 界面（静态默认值，改样式直接编辑 CSS） ================= */
   const SECTION_IDS = ['news', 'profile', 'journey', 'music', 'tour', 'awards', 'screen', 'gallery', 'contact'];
   function applyUi() {
     let ui = (window.JANEZ_DATA && JANEZ_DATA.getUiMerged) ? JANEZ_DATA.getUiMerged() : {};
@@ -356,43 +356,6 @@
       if (ui.texts.heroQuote) { const el = $('.hero-quote'); if (el) el.textContent = '“' + ui.texts.heroQuote + '”'; }
       const secDesc = { news: '#news .sh-desc', profile: '#profile .sh-desc', music: '#music .sh-desc', awards: '#awards .sh-desc' };
       Object.keys(secDesc).forEach(k => { if (ui.texts[k + 'Desc']) { const el = $(secDesc[k]); if (el) el.textContent = ui.texts[k + 'Desc']; } });
-    }
-  }
-
-  /* ================= 导航登录/管理入口 ================= */
-  function syncAuthEntry() {
-    const link = $('#navAuth');
-    const userBtn = $('#navUser');
-    const logoutBtn = $('#navLogout');
-    const A = window.JANEZ_AUTH;
-    const s = A ? A.currentSession() : null;
-    if (s && s.role === 'admin') {
-      if (link) { link.innerHTML = '<em>Admin</em>管理 · ' + s.user; link.setAttribute('href', 'admin.html'); link.classList.add('is-admin'); }
-    } else if (s) {
-      if (link) { link.innerHTML = '<em>Hi</em>' + s.user; link.setAttribute('href', 'user.html'); link.classList.remove('is-admin'); }
-    } else {
-      if (link) { link.innerHTML = '<em>Account</em>登录'; link.setAttribute('href', 'login.html'); link.classList.remove('is-admin'); }
-    }
-    // 账号 + 退出（右上角，登录后可见）
-    if (userBtn) {
-      userBtn.style.display = s ? 'inline-flex' : 'none';
-      if (s) {
-        userBtn.setAttribute('href', s.role === 'admin' ? 'admin.html' : 'user.html');
-        userBtn.title = s.role === 'admin' ? s.user + '（管理员）' : s.user + '（普通用户）';
-        const ava = $('#navUserAva'); if (ava) ava.textContent = s.user.slice(0, 1).toUpperCase();
-        const nm = $('#navUserName'); if (nm) nm.textContent = s.user;
-      }
-    }
-    if (logoutBtn) {
-      logoutBtn.style.display = s ? '' : 'none';
-      if (s && !logoutBtn.dataset.bound) {
-        logoutBtn.dataset.bound = '1';
-        logoutBtn.addEventListener('click', () => {
-          if (!confirm('确认退出当前登录？')) return;
-          A.logout();
-          location.replace('index.html');
-        });
-      }
     }
   }
 
@@ -448,7 +411,6 @@
     initTheme();
     initLightbox();
     applyUi();
-    syncAuthEntry();
     observeReveal();
 
     $('#toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
