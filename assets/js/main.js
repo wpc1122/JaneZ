@@ -68,58 +68,39 @@
     if (av) av.addEventListener('error', () => av.remove(), { once: true });
   }
 
-  /* ================= 渲染：星路历程（竖向整屏滑动 · 一屏一事件一图） ==================== */
+  /* ================= 渲染：星路历程（竖向整屏 · 大图打底文字叠加） ==================== */
   function renderTimeline() {
     const TL = src('TIMELINE');
     const bgmap = (window.TIMELINE_BG) || [];
+    const cover = (window.TIMELINE_COVER) || '';
+    const perEvent = window.TIMELINE_PER_EVENT === true;
     $('#timeline').innerHTML = TL.map((t, i) => {
-      const img = bgmap[i] || '';
-      const photo = img
-        ? `<figure class="tl-photo"><img src="${img}" alt="${t.title} 现场影像" loading="lazy" decoding="async"></figure>`
-        : `<figure class="tl-photo ph" style="${grad(i)}" aria-hidden="true"><span class="ph-year">${t.year}</span><span class="ph-label">JANE ZHANG · MEMORY</span></figure>`;
+      const img = perEvent ? (bgmap[i] || cover) : cover;
       return `
       <div class="tl-item reveal" data-idx="${i}" style="animation-delay:${Math.min(i, 8) * 40}ms">
+        <div class="tl-bg"${img ? ` style="background-image:url('${img}')"` : ''}></div>
+        <div class="tl-shade"></div>
         <div class="tl-card">
           <div class="tl-year">${t.year}<span>${t.date}</span></div>
           <h3 class="tl-title">${t.title}</h3>
           <p class="tl-desc">${t.desc}</p>
         </div>
-        ${photo}
       </div>`;}).join('');
-    // 真实影像加载失败时回退为年份渐变牌（绝不显示破图）
-    $$('#timeline .tl-photo img').forEach(img => {
-      img.addEventListener('error', () => {
-        const fig = img.parentElement;
-        const item = fig.closest('.tl-item');
-        const t = TL[+item.dataset.idx] || { year: '' };
-        fig.classList.add('ph');
-        fig.setAttribute('style', grad(+item.dataset.idx));
-        fig.innerHTML = `<span class="ph-year">${t.year}</span><span class="ph-label">JANE ZHANG · MEMORY</span>`;
-      }, { once: true });
-    });
-    initTimelineSlider(bgmap);
+    initTimelineSlider();
   }
 
-  function initTimelineSlider(bgmap) {
+  function initTimelineSlider() {
     const track = $('#timeline');
     const items = $$('.tl-item', track);
-    const A = $('#journeyBgA'), B = $('#journeyBgB');
     const count = $('#tlCount');
     if (!track || !items.length) return;
-    let toggle = false, current = -1;
+    let current = -1;
 
     function setActive(idx) {
       if (idx === current || idx < 0 || idx >= items.length) return;
       current = idx;
       items.forEach((it, i) => it.classList.toggle('active', i === idx));
       if (count) count.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
-      const bgp = bgmap[idx] || '';
-      const layer = toggle ? A : B;
-      const other = toggle ? B : A;
-      toggle = !toggle;
-      if (!bgp) { layer.classList.remove('show'); other.classList.remove('show'); return; }
-      layer.style.backgroundImage = `url("${bgp}")`;
-      layer.classList.add('show'); other.classList.remove('show');
     }
 
     setActive(0);

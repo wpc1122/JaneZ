@@ -489,7 +489,14 @@ const TIMELINE_BG = [
   'assets/img/gallery-1.jpg',
   'assets/img/gallery-4.jpg'
 ];
+/* 统一封面大图：所有事件暂用同一张（gallery-5，2013 央视春晚舞台现场）。
+   后续逐事件补真实图时：把 TIMELINE_PER_EVENT 改为 true，
+   即按上方 TIMELINE_BG 取各事件图片，未配置者仍回退 TIMELINE_COVER。 */
+const TIMELINE_COVER = 'assets/img/gallery-5.jpg';
+const TIMELINE_PER_EVENT = false;
 if (typeof window !== 'undefined') {
   window.COVER_MAP = COVER_MAP;
   window.TIMELINE_BG = TIMELINE_BG;
+  window.TIMELINE_COVER = TIMELINE_COVER;
+  window.TIMELINE_PER_EVENT = TIMELINE_PER_EVENT;
 }
