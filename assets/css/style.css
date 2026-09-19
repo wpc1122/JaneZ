@@ -628,15 +628,13 @@ html[data-theme="light"] .avatar-art {
 .lb-art {
   aspect-ratio: 4 / 3; border-radius: 14px;
   background: linear-gradient(150deg, var(--c1, #6d5bd0), var(--c2, #d8b46c));
-  margin-bottom: 24px; border: 1px solid rgba(255, 255, 255, .16);
+  margin-bottom: 0; border: 1px solid rgba(255, 255, 255, .16);
   position: relative; overflow: hidden;
 }
 .lb-art::before {
   content: ""; position: absolute; inset: 0;
   background: radial-gradient(circle at 32% 26%, rgba(255,255,255,.24), transparent 56%);
 }
-.lb-caption h3 { font-size: 22px; font-weight: 400; color: #fff; }
-.lb-caption p { font-size: 13px; color: rgba(255, 255, 255, .6); margin-top: 8px; letter-spacing: .1em; }
 .lb-close {
   position: absolute; top: 28px; right: 34px; font-size: 34px; color: #fff; line-height: 1;
   width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.2);

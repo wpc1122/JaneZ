@@ -224,8 +224,6 @@
       $('#lbArt').setAttribute('style', grad(g.tone));
       $('#lbArt').replaceChildren();
     }
-    $('#lbTitle').textContent = g.title;
-    $('#lbSub').textContent = g.sub;
     lb.classList.add('show');
     document.body.classList.add('locked');
   }
