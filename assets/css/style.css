@@ -269,6 +269,33 @@ img { max-width: 100%; display: block; }
 .sec { padding: 118px 0; position: relative; }
 .sec-alt { background: var(--bg-2); }
 .sec-head { margin-bottom: 58px; }
+
+/* ---- 每个内容模块统一以张靓颖真实照片为主背景（替代纯色底，暗化遮罩保证可读） ---- */
+.sec::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-size: cover; background-position: center 28%; background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+.sec::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(7,7,11,.82) 0%, rgba(7,7,11,.56) 42%, rgba(7,7,11,.88) 100%),
+    radial-gradient(85% 62% at 50% 45%, transparent 0%, rgba(7,7,11,.34) 100%);
+}
+.sec .wrap { position: relative; z-index: 2; }
+.sec-head { text-shadow: 0 2px 16px rgba(0,0,0,.55); }
+@media (min-width: 900px) {
+  .sec::before { background-attachment: fixed; }
+}
+/* 各模块对应的真实照片（均为已核实张靓颖舞台/肖像影像，绝不放错图） */
+#news::before    { background-image: url('../../assets/img/gallery-9.jpg'); }  /* 影视金曲之夜 */
+#profile::before { background-image: url('../../assets/img/avatar.jpg'); }     /* 肖像 */
+#music::before   { background-image: url('../../assets/img/gallery-6.jpg'); }  /* Past Progressive */
+#tour::before    { background-image: url('../../assets/img/gallery-1.jpg'); }  /* 追 世界巡演 */
+#awards::before  { background-image: url('../../assets/img/gallery-4.jpg'); }  /* TMEA 年度女歌手 */
+#screen::before  { background-image: url('../../assets/img/gallery-8.jpg'); }  /* 格莱美红毯 */
+#gallery::before { background-image: url('../../assets/img/gallery-2.jpg'); }  /* 光 世界巡演 */
+#contact::before { background-image: url('../../assets/img/gallery-3.jpg'); }  /* 珍相 巡演 */
 .sh-left { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
 .sh-en {
   font-family: "Cormorant Garamond", Georgia, serif;

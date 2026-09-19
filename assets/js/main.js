@@ -68,72 +68,6 @@
     if (av) av.addEventListener('error', () => av.remove(), { once: true });
   }
 
-  /* ================= 渲染：星路历程（竖向整屏 · 大图打底文字叠加） ==================== */
-  function renderTimeline() {
-    const TL = src('TIMELINE');
-    const bgmap = (window.TIMELINE_BG) || [];
-    const cover = (window.TIMELINE_COVER) || '';
-    const perEvent = window.TIMELINE_PER_EVENT === true;
-    $('#timeline').innerHTML = TL.map((t, i) => {
-      const img = perEvent ? (bgmap[i] || cover) : cover;
-      return `
-      <div class="tl-item reveal" data-idx="${i}" style="animation-delay:${Math.min(i, 8) * 40}ms">
-        <div class="tl-bg"${img ? ` style="background-image:url('${img}')"` : ''}></div>
-        <div class="tl-shade"></div>
-        <div class="tl-card">
-          <div class="tl-year">${t.year}<span>${t.date}</span></div>
-          <h3 class="tl-title">${t.title}</h3>
-          <p class="tl-desc">${t.desc}</p>
-        </div>
-      </div>`;}).join('');
-    initTimelineSlider();
-  }
-
-  function initTimelineSlider() {
-    const track = $('#timeline');
-    const items = $$('.tl-item', track);
-    const count = $('#tlCount');
-    if (!track || !items.length) return;
-    let current = -1;
-
-    function setActive(idx) {
-      if (idx === current || idx < 0 || idx >= items.length) return;
-      current = idx;
-      items.forEach((it, i) => it.classList.toggle('active', i === idx));
-      if (count) count.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
-    }
-
-    setActive(0);
-
-    let raf = 0;
-    track.addEventListener('scroll', () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        const c = track.scrollTop + track.clientHeight / 2;
-        let best = 0, bestd = Infinity;
-        items.forEach((it, i) => {
-          const ic = it.offsetTop + it.offsetHeight / 2;
-          const d = Math.abs(ic - c);
-          if (d < bestd) { bestd = d; best = i; }
-        });
-        setActive(best);
-      });
-    }, { passive: true });
-
-    const goTo = (i) => {
-      const n = Math.max(0, Math.min(items.length - 1, i));
-      const it = items[n];
-      if (!it) return;
-      track.scrollTo({ top: it.offsetTop, behavior: 'smooth' });
-      setActive(n);
-    };
-    const prev = $('#tlPrev'), next = $('#tlNext');
-    if (prev) prev.addEventListener('click', () => goTo(current - 1));
-    if (next) next.addEventListener('click', () => goTo(current + 1));
-    items.forEach(it => it.addEventListener('click', () => goTo(+it.dataset.idx)));
-  }
-
   /* ================= 渲染：音乐专辑 ================= */
   const TYPE_LABEL = { studio: '录音室专辑', ep: '迷你专辑 EP', live: '现场专辑', best: '精选辑' };
 
@@ -407,7 +341,7 @@
   }
 
   /* ================= 界面（静态默认值，改样式直接编辑 CSS） ================= */
-  const SECTION_IDS = ['news', 'profile', 'journey', 'music', 'tour', 'awards', 'screen', 'gallery', 'contact'];
+  const SECTION_IDS = ['news', 'profile', 'music', 'tour', 'awards', 'screen', 'gallery', 'contact'];
   function applyUi() {
     let ui = (window.JANEZ_DATA && JANEZ_DATA.getUiMerged) ? JANEZ_DATA.getUiMerged() : {};
     const root = document.documentElement;
@@ -455,7 +389,6 @@
     renderHeroStats();
     renderNews();
     renderProfile();
-    renderTimeline();
     renderAlbums('all');
     renderOST();
     renderGlobal();
