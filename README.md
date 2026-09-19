@@ -51,36 +51,8 @@ zhangliangying/
 
 已部署于 GitHub Pages：**https://wpc1122.github.io/JaneZ/**
 
-仓库：`wpc1122/JaneZ`（`main` 分支根目录为站点根，已含 `.nojekyll`）。
 
-## 源码私有 + 网站公开（方案 A）
-
-如需「源码仅自己可见、成品对外公开」，可在**私有源仓库**里启用随附的
-`.github/workflows/sync-to-pages.yml`：每次推送私有仓 `main`，自动把站点镜像到公开仓
-`wpc1122/JaneZ`，公开仓的 Pages 照常发布。
-
-- 一键配置步骤与故障排查见 **私有仓** 内的 `.github/DEPLOY-README.md`
-  （该文件与 workflow 通过 `--exclude=.github` 排除，不会同步到公开仓，不泄露任何 secret）。
-- 需要在私有仓 `Settings → Secrets` 配一个对公开仓有写权限的 `SYNC_TOKEN`。
-
-
-## 安全加固
-
-- **内容安全策略（CSP）**：`index.html` 通过 meta 声明 `script-src 'self'` 等策略，仅允许同源脚本与样式、禁止内联脚本与 `eval`，可阻断注入型 XSS。
-- **无外部依赖**：不加载任何第三方 CDN 脚本/字体，全部资源同源，杜绝供应链投毒与 SRI 问题。
-- **外链加固**：站外链接统一 `rel="noopener noreferrer nofollow"`，防 tab-nabbing 且不泄露来源。
-- **Referrer 策略**：`strict-origin-when-cross-origin`。
-- **图片兜底**：任意图片加载失败自动移除并回退到渐变视觉，不产生裸的坏图。
-- 仓库通过扫描确认无密钥/令牌、无 `eval`/`document.write`、无内联事件处理器。
 
 ## 关于图片
-
-站点照片位于 `assets/img/`（共 11 张，均已压缩：首屏 1920px、图集 1400px、头像 900px 方图，合计约 1.2MB）：
-
-- `hero.jpg` — 首屏背景（加载失败自动回退为渐变 + 光斑背景）
-- `avatar.jpg` — 档案头像（方图）
-- `gallery-1.jpg` ~ `gallery-9.jpg` — 图集九宫格，点击可查看大图
-
-替换照片：直接覆盖 `assets/img/` 下同名文件即可；新增图集项在 `data.js` 的 `GALLERY` 中加 `img` 字段。
 
 使用真实艺人照片请确认已获得相应授权；本站为粉丝向资料整理站点，图片版权归原作者所有。
