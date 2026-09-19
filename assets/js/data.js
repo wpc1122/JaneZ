@@ -442,3 +442,54 @@ const GALLERY = [
   { title: '格莱美红毯', sub: '2010 首位华人歌手', tone: 7, img: 'assets/img/gallery-8.jpg' },
   { title: '影视金曲之夜', sub: 'OST 女王', tone: 8, img: 'assets/img/gallery-9.jpg' }
 ];
+
+/* ---------- 封面 / 背景映射（本地图片，由抓取脚本生成；缺失时前端回退渐变占位） ---------- */
+const COVER_MAP = {
+  album: [
+    'assets/img/covers/album-0.jpg', 'assets/img/covers/album-1.jpg', 'assets/img/covers/album-2.jpg',
+    'assets/img/covers/album-3.jpg', 'assets/img/covers/album-4.jpg', 'assets/img/covers/album-5.jpg',
+    'assets/img/covers/album-6.jpg', 'assets/img/covers/album-7.jpg', 'assets/img/covers/album-8.jpg',
+    'assets/img/covers/album-9.jpg', 'assets/img/covers/album-10.jpg', 'assets/img/covers/album-11.jpg',
+    'assets/img/covers/album-12.jpg', 'assets/img/covers/album-13.jpg', 'assets/img/covers/album-14.jpg',
+    'assets/img/covers/album-15.jpg', 'assets/img/covers/album-16.jpg', 'assets/img/covers/album-17.jpg',
+    'assets/img/covers/album-18.jpg'
+  ],
+  ost: [
+    'assets/img/osts/ost-0.jpg', 'assets/img/osts/ost-1.jpg', 'assets/img/osts/ost-2.jpg',
+    'assets/img/osts/ost-3.jpg', 'assets/img/osts/ost-4.jpg', 'assets/img/osts/ost-5.jpg',
+    'assets/img/osts/ost-6.jpg', 'assets/img/osts/ost-7.jpg', 'assets/img/osts/ost-8.jpg',
+    'assets/img/osts/ost-9.jpg', 'assets/img/osts/ost-10.jpg', 'assets/img/osts/ost-11.jpg',
+    'assets/img/osts/ost-12.jpg', 'assets/img/osts/ost-13.jpg', 'assets/img/osts/ost-14.jpg',
+    'assets/img/osts/ost-15.jpg', 'assets/img/osts/ost-16.jpg', 'assets/img/osts/ost-17.jpg',
+    'assets/img/osts/ost-18.jpg'
+  ]
+};
+/* 星路历程每项对应的背景图：
+   优先使用站内已有真实照片（gallery-*.jpg，均为张靓颖真实舞台/奖项影像）中与事件相符者；
+   无相符真实照片者留空，前端回退为渐变占位（绝不放置错误图片）。
+   注：专辑/OST 真实封面需联网抓取（沙箱当前外网不通），待可联网时填入 assets/img/covers、osts 即可自动生效。 */
+const TIMELINE_BG = [
+  '', '', '', '', '',
+  '',
+  'assets/img/gallery-9.jpg',
+  '',
+  'assets/img/gallery-8.jpg',
+  '',
+  '',
+  'assets/img/gallery-5.jpg',
+  '',
+  '',
+  '',
+  '',
+  'assets/img/gallery-7.jpg',
+  'assets/img/gallery-6.jpg',
+  'assets/img/gallery-6.jpg',
+  '',
+  'assets/img/gallery-2.jpg',
+  'assets/img/gallery-1.jpg',
+  'assets/img/gallery-4.jpg'
+];
+if (typeof window !== 'undefined') {
+  window.COVER_MAP = COVER_MAP;
+  window.TIMELINE_BG = TIMELINE_BG;
+}

@@ -944,3 +944,104 @@ html[data-theme="light"] .hero-photo-overlay {
   .mq-item { font-size: 16px; }
 }
 
+/* ============================================================
+ *  新增：星路历程背景切换 + 封面可点击 + OST 卡片
+ * ============================================================ */
+
+/* ---- 星路历程：横向滑块 + 背景层 ---- */
+#journey { position: relative; overflow: hidden; }
+.journey-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center 22%; background-repeat: no-repeat;
+  opacity: 0; transition: opacity .7s var(--ease);
+}
+.journey-bg.show { opacity: 1; }
+.journey-bg-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(12,10,18,.80) 0%, rgba(12,10,18,.55) 38%, rgba(12,10,18,.92) 100%),
+    linear-gradient(90deg, rgba(12,10,18,.72), transparent 55%);
+}
+#journey .wrap { position: relative; z-index: 2; }
+
+.timeline {
+  display: flex; gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 18px 2px 26px; -webkit-overflow-scrolling: touch; scrollbar-width: thin;
+}
+.timeline::before { display: none; }
+.tl-item {
+  position: relative; flex: 0 0 330px; width: auto; margin: 0; padding: 0;
+  scroll-snap-align: center;
+}
+.tl-item::after { display: none; }
+.tl-card { transition: all .45s var(--ease); }
+.tl-item.active .tl-card { border-color: var(--gold); box-shadow: var(--shadow); transform: translateY(-4px); }
+.tl-item.active .tl-year { color: var(--gold); }
+
+.tl-nav { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 8px; }
+.tl-arrow {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--border-strong); background: rgba(255,255,255,.04);
+  color: var(--text); font-size: 16px; cursor: pointer; transition: .3s var(--ease);
+  display: grid; place-items: center;
+}
+.tl-arrow:hover { border-color: var(--gold); color: var(--gold); background: rgba(255,255,255,.08); }
+.tl-hint { font-size: 12.5px; color: var(--muted); letter-spacing: .1em; }
+
+/* ---- 专辑封面图（覆盖在渐变占位之上） ---- */
+.album-card { text-decoration: none; color: inherit; cursor: pointer; }
+.ac-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: 1;
+}
+.ac-type { z-index: 2; }
+.album-card:hover .ac-img { transform: scale(1.06); transition: transform .7s var(--ease); }
+
+/* ---- 影视金曲 OST 卡片网格 ---- */
+.ost-list {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+  background: none; border: 0; border-radius: 0; padding: 0;
+}
+.ost-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; text-decoration: none; color: inherit; cursor: pointer;
+  transition: all .45s var(--ease); display: flex; flex-direction: column;
+}
+.ost-card:hover { transform: translateY(-6px); border-color: var(--border-strong); box-shadow: var(--shadow); }
+.oc-cover { position: relative; aspect-ratio: 1; overflow: hidden; }
+.oc-cover .ac-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+.ost-card:hover .oc-cover .ac-img { transform: scale(1.06); transition: transform .7s var(--ease); }
+.oc-body { padding: 16px 18px 18px; flex: 1; display: flex; flex-direction: column; }
+.oc-song { font-size: 15px; font-weight: 500; }
+.oc-work { font-size: 12.5px; color: var(--accent); margin-top: 5px; }
+.oc-year { font-size: 12px; color: var(--muted); margin-top: 8px; font-family: "Cormorant Garamond", Georgia, serif; letter-spacing: .08em; }
+
+/* ---- 详情页（albums/ osts/） ---- */
+.detail-hero { display: grid; grid-template-columns: 320px 1fr; gap: 40px; align-items: center; }
+.detail-cover {
+  width: 100%; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow); position: relative;
+}
+.detail-cover .ac-art { position: absolute; inset: 0; display: grid; place-items: center; }
+.detail-cover .ac-art span { font-size: 20px; font-weight: 500; color: #fff; text-shadow: 0 2px 14px rgba(0,0,0,.4); padding: 0 16px; text-align: center; }
+.detail-cover .ac-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.detail-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+.detail-tags span { font-size: 12px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+.detail-award { color: var(--gold); font-size: 13.5px; margin-top: 10px; }
+.detail-back { display: inline-flex; align-items: center; gap: 8px; margin: 8px 0 26px; color: var(--gold); font-size: 14px; }
+.detail-back:hover { text-decoration: underline; }
+.detail-meta { display: flex; flex-wrap: wrap; gap: 22px; margin-bottom: 18px; color: var(--muted); font-size: 13px; }
+.detail-meta b { color: var(--text); font-weight: 500; }
+
+@media (max-width: 900px) {
+  .album-grid { grid-template-columns: repeat(3, 1fr); }
+  .ost-list { grid-template-columns: repeat(3, 1fr); }
+  .detail-hero { grid-template-columns: 1fr; gap: 22px; }
+  .detail-cover { max-width: 300px; }
+}
+@media (max-width: 640px) {
+  .album-grid { grid-template-columns: repeat(2, 1fr); }
+  .ost-list { grid-template-columns: repeat(2, 1fr); }
+  .tl-item { flex-basis: 78vw; }
+}
+

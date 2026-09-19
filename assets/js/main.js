@@ -68,35 +68,101 @@
     if (av) av.addEventListener('error', () => av.remove(), { once: true });
   }
 
-  /* ================= 渲染：星路历程 ================= */
+  /* ================= 渲染：星路历程（横向滑块 + 背景切换） ==================== */
   function renderTimeline() {
-    $('#timeline').innerHTML = src('TIMELINE').map(t => `
-      <div class="tl-item reveal">
+    const TL = src('TIMELINE');
+    const bgmap = (window.TIMELINE_BG) || [];
+    $('#timeline').innerHTML = TL.map((t, i) => `
+      <div class="tl-item reveal" data-idx="${i}" style="animation-delay:${i * 40}ms">
         <div class="tl-card">
           <div class="tl-year">${t.year}<span>${t.date}</span></div>
           <h3 class="tl-title">${t.title}</h3>
           <p class="tl-desc">${t.desc}</p>
         </div>
       </div>`).join('');
+    initTimelineSlider(bgmap);
+  }
+
+  function initTimelineSlider(bgmap) {
+    const track = $('#timeline');
+    const items = $$('.tl-item', track);
+    const A = $('#journeyBgA'), B = $('#journeyBgB');
+    if (!track || !items.length) return;
+    let toggle = false, current = -1;
+
+    function setActive(idx) {
+      if (idx === current || idx < 0 || idx >= items.length) return;
+      current = idx;
+      items.forEach((it, i) => it.classList.toggle('active', i === idx));
+      const bgp = bgmap[idx] || '';
+      const layer = toggle ? A : B;
+      const other = toggle ? B : A;
+      toggle = !toggle;
+      if (!bgp) { layer.classList.remove('show'); other.classList.remove('show'); return; }
+      layer.style.backgroundImage = `url("${bgp}")`;
+      const im = new Image();
+      im.onload = () => { layer.classList.add('show'); other.classList.remove('show'); };
+      im.onerror = () => { layer.classList.remove('show'); };
+      im.src = bgp;
+      layer.classList.add('show'); other.classList.remove('show');
+    }
+
+    setActive(0);
+
+    let raf = 0;
+    track.addEventListener('scroll', () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const c = track.scrollLeft + track.clientWidth / 2;
+        let best = 0, bestd = Infinity;
+        items.forEach((it, i) => {
+          const ic = it.offsetLeft + it.offsetWidth / 2;
+          const d = Math.abs(ic - c);
+          if (d < bestd) { bestd = d; best = i; }
+        });
+        setActive(best);
+      });
+    }, { passive: true });
+
+    const step = (dir) => {
+      const cur = items.findIndex(it => it.classList.contains('active'));
+      const next = Math.max(0, Math.min(items.length - 1, (cur < 0 ? 0 : cur) + dir));
+      items[next].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      setActive(next);
+    };
+    const prev = $('#tlPrev'), next = $('#tlNext');
+    if (prev) prev.addEventListener('click', () => step(-1));
+    if (next) next.addEventListener('click', () => step(1));
+    items.forEach(it => it.addEventListener('click', () => {
+      it.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      setActive(+it.dataset.idx);
+    }));
   }
 
   /* ================= 渲染：音乐专辑 ================= */
   const TYPE_LABEL = { studio: '录音室专辑', ep: '迷你专辑 EP', live: '现场专辑', best: '精选辑' };
 
+  function bindCoverFallback() {
+    $$('.ac-img').forEach(img => {
+      img.addEventListener('error', () => img.remove(), { once: true });
+    });
+  }
+
   function renderAlbums(filter) {
     const all = src('ALBUMS');
-    const list = filter === 'all' ? all : all.filter(a => a.type === filter);
-    if (!list.length) {
-      $('#albumGrid').innerHTML = '<p style="color:var(--muted)">暂无该分类作品。</p>';
-      return;
-    }
-    $('#albumGrid').innerHTML = list.map((a, i) => `
-      <article class="album-card reveal" style="animation-delay:${i * 60}ms">
+    const cmap = (window.COVER_MAP && window.COVER_MAP.album) || [];
+    const html = all.map((a, gi) => {
+      if (filter !== 'all' && a.type !== filter) return '';
+      const cover = cmap[gi] || '';
+      return `
+      <a class="album-card reveal" style="animation-delay:${gi * 60}ms" href="albums/album-${gi}.html">
         <div class="ac-cover">
-          <div class="ac-art" style="${grad(i)}">
+          <div class="ac-art" style="${grad(gi)}" aria-hidden="true">
             <span class="ac-ring"></span>
             <span class="ac-name">${a.name}</span>
           </div>
+          ${cover ? `<img class="ac-img" src="${cover}" alt="${a.name} 专辑封面" loading="lazy" decoding="async">` : ''}
           <span class="ac-type">${TYPE_LABEL[a.type]}</span>
         </div>
         <div class="ac-body">
@@ -111,20 +177,37 @@
             <p class="ac-label">发行：${a.label}</p>
           </div>
         </div>
-      </article>`).join('');
+      </a>`;
+    }).filter(Boolean).join('');
+    $('#albumGrid').innerHTML = html || '<p style="color:var(--muted)">暂无该分类作品。</p>';
+    bindCoverFallback();
     observeReveal();
   }
 
   /* ================= 渲染：影视金曲 ================= */
   function renderOST() {
-    $('#ostList').innerHTML = src('OSTS').map(o => `
-      <div class="ost-row">
-        <span class="ost-year">${o.year}</span>
-        <div>
-          <div class="ost-song">${o.song}<span class="ost-work">${o.work}</span></div>
-          <p class="ost-note">${o.note}</p>
+    const all = src('OSTS');
+    const cmap = (window.COVER_MAP && window.COVER_MAP.ost) || [];
+    $('#ostList').innerHTML = all.map((o, gi) => {
+      const cover = cmap[gi] || '';
+      return `
+      <a class="ost-card reveal" href="osts/ost-${gi}.html" style="animation-delay:${gi * 45}ms">
+        <div class="oc-cover">
+          <div class="ac-art" style="${grad(gi)}" aria-hidden="true">
+            <span class="ac-ring"></span>
+            <span class="ac-name">${o.song}</span>
+          </div>
+          ${cover ? `<img class="ac-img" src="${cover}" alt="${o.song} 封面" loading="lazy" decoding="async">` : ''}
         </div>
-      </div>`).join('');
+        <div class="oc-body">
+          <div class="oc-song">${o.song}</div>
+          <div class="oc-work">${o.work}</div>
+          <div class="oc-year">${o.year}</div>
+        </div>
+      </a>`;
+    }).join('');
+    bindCoverFallback();
+    observeReveal();
   }
 
   /* ================= 渲染：国际作品 ================= */
