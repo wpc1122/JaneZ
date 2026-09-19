@@ -948,45 +948,77 @@ html[data-theme="light"] .hero-photo-overlay {
  *  新增：星路历程背景切换 + 封面可点击 + OST 卡片
  * ============================================================ */
 
-/* ---- 星路历程：横向滑块 + 背景层 ---- */
+/* ---- 星路历程：竖向整屏滑动（一屏一事件一图） ---- */
 #journey { position: relative; overflow: hidden; }
 .journey-bg {
   position: absolute; inset: 0; z-index: 0;
   background-size: cover; background-position: center 22%; background-repeat: no-repeat;
-  opacity: 0; transition: opacity .7s var(--ease);
+  opacity: 0; transition: opacity .8s var(--ease);
+  filter: blur(24px) brightness(.5) saturate(1.15);
+  transform: scale(1.16);
 }
 .journey-bg.show { opacity: 1; }
 .journey-bg-overlay {
   position: absolute; inset: 0; z-index: 1;
-  background:
-    linear-gradient(180deg, rgba(12,10,18,.80) 0%, rgba(12,10,18,.55) 38%, rgba(12,10,18,.92) 100%),
-    linear-gradient(90deg, rgba(12,10,18,.72), transparent 55%);
+  background: linear-gradient(180deg, rgba(12,10,18,.84) 0%, rgba(12,10,18,.5) 42%, rgba(12,10,18,.92) 100%);
 }
 #journey .wrap { position: relative; z-index: 2; }
 
 .timeline {
-  display: flex; gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory;
-  padding: 18px 2px 26px; -webkit-overflow-scrolling: touch; scrollbar-width: thin;
+  position: relative;
+  display: flex; flex-direction: column; gap: 26px;
+  height: calc(100vh - 250px); min-height: 470px;
+  overflow-y: auto; scroll-snap-type: y mandatory;
+  padding: 4px 2px; scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
+.timeline::-webkit-scrollbar { display: none; }
 .timeline::before { display: none; }
 .tl-item {
-  position: relative; flex: 0 0 330px; width: auto; margin: 0; padding: 0;
-  scroll-snap-align: center;
+  position: relative; flex: 0 0 100%; width: auto; margin: 0; padding: 0;
+  scroll-snap-align: start; scroll-snap-stop: always; min-height: 0;
+  display: grid; grid-template-columns: minmax(280px, 5fr) 7fr;
+  gap: 38px; align-items: center;
 }
 .tl-item::after { display: none; }
-.tl-card { transition: all .45s var(--ease); }
-.tl-item.active .tl-card { border-color: var(--gold); box-shadow: var(--shadow); transform: translateY(-4px); }
+.tl-card { transition: all .45s var(--ease); align-self: center; }
+.tl-item.active .tl-card { border-color: var(--gold); box-shadow: var(--shadow); }
 .tl-item.active .tl-year { color: var(--gold); }
-
-.tl-nav { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 8px; }
+.tl-photo {
+  margin: 0; width: 100%; height: 100%; max-height: 540px;
+  border-radius: var(--radius); overflow: hidden; position: relative;
+  border: 1px solid var(--border-strong); box-shadow: var(--shadow);
+}
+.tl-photo img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center 22%;
+  display: block; transition: transform .8s var(--ease);
+}
+.tl-item.active .tl-photo img { transform: scale(1.03); }
+.tl-photo.ph {
+  display: grid; place-items: center;
+  background: linear-gradient(150deg, var(--c1, #2a2440), var(--c2, #0e0c16));
+}
+.tl-photo .ph-year {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(44px, 6vw, 76px); font-weight: 600; letter-spacing: .04em;
+  color: rgba(255,255,255,.94); text-shadow: 0 4px 24px rgba(0,0,0,.38);
+}
+.tl-photo .ph-label {
+  position: absolute; bottom: 16px; left: 0; right: 0; text-align: center;
+  font-size: 11.5px; color: rgba(255,255,255,.62); letter-spacing: .28em;
+}
+.tl-nav { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 14px; }
 .tl-arrow {
   width: 44px; height: 44px; border-radius: 50%;
   border: 1px solid var(--border-strong); background: rgba(255,255,255,.04);
-  color: var(--text); font-size: 16px; cursor: pointer; transition: .3s var(--ease);
+  color: var(--text); font-size: 15px; cursor: pointer; transition: .3s var(--ease);
   display: grid; place-items: center;
 }
 .tl-arrow:hover { border-color: var(--gold); color: var(--gold); background: rgba(255,255,255,.08); }
 .tl-hint { font-size: 12.5px; color: var(--muted); letter-spacing: .1em; }
+.tl-count {
+  font-size: 12.5px; color: var(--muted); letter-spacing: .16em;
+  font-variant-numeric: tabular-nums; min-width: 76px; text-align: center;
+}
 
 /* ---- 专辑封面图（覆盖在渐变占位之上） ---- */
 .album-card { text-decoration: none; color: inherit; cursor: pointer; }
@@ -1042,6 +1074,10 @@ html[data-theme="light"] .hero-photo-overlay {
 @media (max-width: 640px) {
   .album-grid { grid-template-columns: repeat(2, 1fr); }
   .ost-list { grid-template-columns: repeat(2, 1fr); }
-  .tl-item { flex-basis: 78vw; }
+  .timeline { height: calc(100vh - 215px); min-height: 430px; gap: 18px; }
+  .tl-item { grid-template-columns: 1fr; gap: 16px; align-content: start; }
+  .tl-photo { height: auto; max-height: none; aspect-ratio: 16 / 10; }
+  .tl-photo .ph-year { font-size: 46px; }
+  .tl-hint { display: none; }
 }
 

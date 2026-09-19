@@ -68,18 +68,35 @@
     if (av) av.addEventListener('error', () => av.remove(), { once: true });
   }
 
-  /* ================= 渲染：星路历程（横向滑块 + 背景切换） ==================== */
+  /* ================= 渲染：星路历程（竖向整屏滑动 · 一屏一事件一图） ==================== */
   function renderTimeline() {
     const TL = src('TIMELINE');
     const bgmap = (window.TIMELINE_BG) || [];
-    $('#timeline').innerHTML = TL.map((t, i) => `
-      <div class="tl-item reveal" data-idx="${i}" style="animation-delay:${i * 40}ms">
+    $('#timeline').innerHTML = TL.map((t, i) => {
+      const img = bgmap[i] || '';
+      const photo = img
+        ? `<figure class="tl-photo"><img src="${img}" alt="${t.title} 现场影像" loading="lazy" decoding="async"></figure>`
+        : `<figure class="tl-photo ph" style="${grad(i)}" aria-hidden="true"><span class="ph-year">${t.year}</span><span class="ph-label">JANE ZHANG · MEMORY</span></figure>`;
+      return `
+      <div class="tl-item reveal" data-idx="${i}" style="animation-delay:${Math.min(i, 8) * 40}ms">
         <div class="tl-card">
           <div class="tl-year">${t.year}<span>${t.date}</span></div>
           <h3 class="tl-title">${t.title}</h3>
           <p class="tl-desc">${t.desc}</p>
         </div>
-      </div>`).join('');
+        ${photo}
+      </div>`;}).join('');
+    // 真实影像加载失败时回退为年份渐变牌（绝不显示破图）
+    $$('#timeline .tl-photo img').forEach(img => {
+      img.addEventListener('error', () => {
+        const fig = img.parentElement;
+        const item = fig.closest('.tl-item');
+        const t = TL[+item.dataset.idx] || { year: '' };
+        fig.classList.add('ph');
+        fig.setAttribute('style', grad(+item.dataset.idx));
+        fig.innerHTML = `<span class="ph-year">${t.year}</span><span class="ph-label">JANE ZHANG · MEMORY</span>`;
+      }, { once: true });
+    });
     initTimelineSlider(bgmap);
   }
 
@@ -87,6 +104,7 @@
     const track = $('#timeline');
     const items = $$('.tl-item', track);
     const A = $('#journeyBgA'), B = $('#journeyBgB');
+    const count = $('#tlCount');
     if (!track || !items.length) return;
     let toggle = false, current = -1;
 
@@ -94,16 +112,13 @@
       if (idx === current || idx < 0 || idx >= items.length) return;
       current = idx;
       items.forEach((it, i) => it.classList.toggle('active', i === idx));
+      if (count) count.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
       const bgp = bgmap[idx] || '';
       const layer = toggle ? A : B;
       const other = toggle ? B : A;
       toggle = !toggle;
       if (!bgp) { layer.classList.remove('show'); other.classList.remove('show'); return; }
       layer.style.backgroundImage = `url("${bgp}")`;
-      const im = new Image();
-      im.onload = () => { layer.classList.add('show'); other.classList.remove('show'); };
-      im.onerror = () => { layer.classList.remove('show'); };
-      im.src = bgp;
       layer.classList.add('show'); other.classList.remove('show');
     }
 
@@ -114,10 +129,10 @@
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        const c = track.scrollLeft + track.clientWidth / 2;
+        const c = track.scrollTop + track.clientHeight / 2;
         let best = 0, bestd = Infinity;
         items.forEach((it, i) => {
-          const ic = it.offsetLeft + it.offsetWidth / 2;
+          const ic = it.offsetTop + it.offsetHeight / 2;
           const d = Math.abs(ic - c);
           if (d < bestd) { bestd = d; best = i; }
         });
@@ -125,19 +140,17 @@
       });
     }, { passive: true });
 
-    const step = (dir) => {
-      const cur = items.findIndex(it => it.classList.contains('active'));
-      const next = Math.max(0, Math.min(items.length - 1, (cur < 0 ? 0 : cur) + dir));
-      items[next].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      setActive(next);
+    const goTo = (i) => {
+      const n = Math.max(0, Math.min(items.length - 1, i));
+      const it = items[n];
+      if (!it) return;
+      track.scrollTo({ top: it.offsetTop, behavior: 'smooth' });
+      setActive(n);
     };
     const prev = $('#tlPrev'), next = $('#tlNext');
-    if (prev) prev.addEventListener('click', () => step(-1));
-    if (next) next.addEventListener('click', () => step(1));
-    items.forEach(it => it.addEventListener('click', () => {
-      it.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      setActive(+it.dataset.idx);
-    }));
+    if (prev) prev.addEventListener('click', () => goTo(current - 1));
+    if (next) next.addEventListener('click', () => goTo(current + 1));
+    items.forEach(it => it.addEventListener('click', () => goTo(+it.dataset.idx)));
   }
 
   /* ================= 渲染：音乐专辑 ================= */
