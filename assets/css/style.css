@@ -273,7 +273,7 @@ img { max-width: 100%; display: block; }
 /* ---- 每个内容模块统一以张靓颖真实照片为主背景（替代纯色底，暗化遮罩保证可读） ---- */
 .sec::before {
   content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background-size: cover; background-position: center 28%; background-repeat: no-repeat;
+  background-size: cover; background-position: center 0%; background-repeat: no-repeat;
   background-attachment: scroll;
 }
 .sec::after {
