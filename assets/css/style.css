@@ -496,8 +496,8 @@ html[data-theme="light"] .avatar-art {
 .ost-work { font-size: 12.5px; color: var(--accent); }
 .ost-note { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.8; }
 
-/* ============ 国际作品 ============ */
-.global-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+/* ============ 国际作品（套用 OST 卡片网格，视觉与影视金曲一致） ============ */
+.global-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
 .global-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 26px 24px; transition: all .4s var(--ease); position: relative;
@@ -1033,7 +1033,7 @@ html[data-theme="light"] .hero-photo-overlay {
 .album-card { text-decoration: none; color: inherit; cursor: pointer; }
 .ac-img {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; z-index: 1;
+  object-fit: cover; object-position: center top; z-index: 1;
 }
 .ac-type { z-index: 2; }
 .album-card:hover .ac-img { transform: scale(1.06); transition: transform .7s var(--ease); }
@@ -1050,7 +1050,7 @@ html[data-theme="light"] .hero-photo-overlay {
 }
 .ost-card:hover { transform: translateY(-6px); border-color: var(--border-strong); box-shadow: var(--shadow); }
 .oc-cover { position: relative; aspect-ratio: 1; overflow: hidden; }
-.oc-cover .ac-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+.oc-cover .ac-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; z-index: 1; }
 .ost-card:hover .oc-cover .ac-img { transform: scale(1.06); transition: transform .7s var(--ease); }
 .oc-body { padding: 16px 18px 18px; flex: 1; display: flex; flex-direction: column; }
 .oc-song { font-size: 15px; font-weight: 500; }
@@ -1065,7 +1065,7 @@ html[data-theme="light"] .hero-photo-overlay {
 }
 .detail-cover .ac-art { position: absolute; inset: 0; display: grid; place-items: center; }
 .detail-cover .ac-art span { font-size: 20px; font-weight: 500; color: #fff; text-shadow: 0 2px 14px rgba(0,0,0,.4); padding: 0 16px; text-align: center; }
-.detail-cover .ac-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.detail-cover .ac-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
 .detail-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
 .detail-tags span { font-size: 12px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
 .detail-award { color: var(--gold); font-size: 13.5px; margin-top: 10px; }
@@ -1077,12 +1077,14 @@ html[data-theme="light"] .hero-photo-overlay {
 @media (max-width: 900px) {
   .album-grid { grid-template-columns: repeat(3, 1fr); }
   .ost-list { grid-template-columns: repeat(3, 1fr); }
+  .global-grid { grid-template-columns: repeat(3, 1fr); }
   .detail-hero { grid-template-columns: 1fr; gap: 22px; }
   .detail-cover { max-width: 300px; }
 }
 @media (max-width: 640px) {
   .album-grid { grid-template-columns: repeat(2, 1fr); }
   .ost-list { grid-template-columns: repeat(2, 1fr); }
+  .global-grid { grid-template-columns: repeat(2, 1fr); }
   .timeline { height: calc(100vh - 205px); min-height: 430px; }
   .tl-card { margin: 0 14px; padding: 20px 20px 22px; max-width: none; }
   .tl-hint { display: none; }

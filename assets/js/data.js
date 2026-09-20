@@ -270,17 +270,34 @@ const OSTS = [
   { song: '破晓以后', work: '电影《龙之谷：破晓奇兵》', year: '2014', note: '中文版主题曲' },
   { song: 'Be Here', work: '电影《露水红颜》', year: '2014', note: '电影主题曲' },
   { song: '沉香', work: '电视剧《沉香如屑》', year: '2022', note: '古装仙侠剧主题曲' },
-  { song: 'I Love This City', work: '成都城市形象主题曲', year: '2008', note: '汶川地震后推出 · 获四川省委宣传部"五个一工程"奖' }
+  { song: 'I Love This City', work: '成都城市形象主题曲', year: '2008', note: '汶川地震后推出 · 获四川省委宣传部"五个一工程"奖' },
+  { song: 'Writing\'s On The Wall', work: '电影《007：幽灵党》', year: '2015', note: '中国区推广曲 · 翻唱 Sam Smith 原曲，随影片全球发行' },
+  { song: 'Battlefield', work: '电影《长城》', year: '2016', note: '全球推广曲 · 未宣传即登上美国 iTunes 即时下载总榜第50位、电影原声带榜第2位' },
+  { song: '女儿国', work: '电影《西游记女儿国》', year: '2017', note: '与李荣浩合唱 · 电影主题曲' },
+  { song: '红蔷薇', work: '电视剧《红蔷薇》', year: '2017', note: '陈少琪、张靓颖作词 · 电视剧主题曲' },
+  { song: '双生焰', work: '电影《神探蒲松龄》', year: '2019', note: '电影主题曲' },
+  { song: '蝴蝶飓风', work: '电视剧《怪你过分美丽》', year: '2020', note: '电视剧主题曲' },
+  { song: '她', work: '电视剧《了不起的女孩》', year: '2020', note: '电视剧主题曲' },
+  { song: '无华', work: '电视剧《有翡》', year: '2020', note: '片尾主题曲 · 与刘宇宁合唱' },
+  { song: '最可爱的人', work: '电影《长津湖》', year: '2021', note: '电影宣传主题曲' },
+  { song: '无忘', work: '动画《魔道祖师》', year: '2021', note: '完结篇主题曲 / 片尾曲' },
+  { song: '约定', work: '网络剧《约定》', year: '2021', note: '网络剧主题曲' },
+  { song: '偏星', work: '电视剧《沉香如屑》', year: '2022', note: '电视剧片尾曲' }
 ];
 
 /* ---------- 4. 英文单曲 / 国际化作品 ---------- */
 const GLOBAL_SONGS = [
-  { name: 'Dust My Shoulders Off', year: '2016', note: '首支全球发行的英文单曲，登上美国 iTunes 即时榜第4名，MV 蝉联 iTunes MV 榜冠军近一个月' },
-  { name: '808', year: '2018', note: '累计八周进榜美国公告牌热舞/电子歌曲排行榜，历史最高第23位' },
-  { name: 'Fighting Shadows', year: '2015', note: '电影《终结者：创世纪》全球主题曲，与 Big Sean 合作' },
-  { name: 'Green Light', year: '2024', note: '英文单曲，获第6届腾讯音乐娱乐盛典年度十大金曲' },
-  { name: 'Work For It', year: '2017', note: '英文专辑《Past Progressive》收录曲目' },
-  { name: '印象西湖雨 / Impression of the West Lake', year: '2010', note: '与喜多郎合作，收录专辑提名第52届格莱美最佳新世纪音乐专辑奖' }
+  { name: 'Dust My Shoulders Off', year: '2016', work: '与 Timbaland 合作 · 首支全球发行英文单曲', note: '首支全球发行的英文单曲，登上美国 iTunes 即时榜第4名，MV 蝉联 iTunes MV 榜冠军近一个月' },
+  { name: '808', year: '2018', work: '与 DJ Jack Novak 合作 · 公告牌热舞/电子榜', note: '累计八周进榜美国公告牌热舞/电子歌曲排行榜，历史最高第23位' },
+  { name: 'Fighting Shadows', year: '2015', work: '电影《终结者：创世纪》全球主题曲', note: '电影《终结者：创世纪》全球主题曲，与 Big Sean 合作' },
+  { name: 'Green Light', year: '2024', work: '英文单曲', note: '英文单曲，获第6届腾讯音乐娱乐盛典年度十大金曲' },
+  { name: 'Work For It', year: '2017', work: '英文专辑《Past Progressive》收录曲目', note: '英文专辑《Past Progressive》收录曲目' },
+  { name: '印象西湖雨 / Impression of the West Lake', year: '2010', work: '与喜多郎合作 · 提名格莱美', note: '与喜多郎合作，收录专辑提名第52届格莱美最佳新世纪音乐专辑奖' },
+  { name: 'Change Your World', year: '2015', work: '与 Tiësto 合作 · 风暴电音节主题曲', note: '与荷兰 DJ Tiësto 合作 · 风暴电音节主题曲' },
+  { name: 'Dream It Possible', year: '2015', work: '面向国际市场的英文单曲', note: '单曲，面向国际市场的英文作品' },
+  { name: 'Battlefield', year: '2016', work: '电影《长城》全球推广曲', note: '电影《长城》全球推广曲 · 登上美国 iTunes 即时下载总榜第50位、电影原声带榜第2位' },
+  { name: 'Dust My Shoulders Off (Steve Aoki Remix)', year: '2018', work: '与 Steve Aoki 的混音版', note: '与 DJ Steve Aoki 的混音版 · 收录于《Billboard Presents Electric Asia Vol.1》' },
+  { name: 'Make It Big', year: '2016', work: '面向国际市场的英文单曲', note: '面向国际市场的英文单曲' }
 ];
 
 /* ---------- 5. 星路历程（时间线） ---------- */
@@ -461,7 +478,17 @@ const COVER_MAP = {
     'assets/img/osts/ost-9.jpg', 'assets/img/osts/ost-10.jpg', 'assets/img/osts/ost-11.jpg',
     'assets/img/osts/ost-12.jpg', 'assets/img/osts/ost-13.jpg', 'assets/img/osts/ost-14.jpg',
     'assets/img/osts/ost-15.jpg', 'assets/img/osts/ost-16.jpg', 'assets/img/osts/ost-17.jpg',
-    'assets/img/osts/ost-18.jpg'
+    'assets/img/osts/ost-18.jpg',
+    'assets/img/osts/ost-19.jpg', 'assets/img/osts/ost-20.jpg', 'assets/img/osts/ost-21.jpg',
+    'assets/img/osts/ost-22.jpg', 'assets/img/osts/ost-23.jpg', 'assets/img/osts/ost-24.jpg',
+    'assets/img/osts/ost-25.jpg', 'assets/img/osts/ost-26.jpg', 'assets/img/osts/ost-27.jpg',
+    'assets/img/osts/ost-28.jpg', 'assets/img/osts/ost-29.jpg', 'assets/img/osts/ost-30.jpg'
+  ],
+  global: [
+    'assets/img/globals/global-0.jpg', 'assets/img/globals/global-1.jpg', 'assets/img/globals/global-2.jpg',
+    'assets/img/globals/global-3.jpg', 'assets/img/globals/global-4.jpg', 'assets/img/globals/global-5.jpg',
+    'assets/img/globals/global-6.jpg', 'assets/img/globals/global-7.jpg', 'assets/img/globals/global-8.jpg',
+    'assets/img/globals/global-9.jpg', 'assets/img/globals/global-10.jpg'
   ]
 };
 /* 星路历程每项对应的背景图：

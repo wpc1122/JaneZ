@@ -78,9 +78,10 @@
   }
 
   function renderAlbums(filter) {
-    const all = src('ALBUMS');
+    const all = src('ALBUMS').map((a, gi) => ({ a, gi }))
+      .sort((x, y) => (x.a.date || '').localeCompare(y.a.date || '', undefined, { numeric: true }));
     const cmap = (window.COVER_MAP && window.COVER_MAP.album) || [];
-    const html = all.map((a, gi) => {
+    const html = all.map(({ a, gi }) => {
       if (filter !== 'all' && a.type !== filter) return '';
       const cover = cmap[gi] || '';
       return `
@@ -114,9 +115,10 @@
 
   /* ================= 渲染：影视金曲 ================= */
   function renderOST() {
-    const all = src('OSTS');
+    const all = src('OSTS').map((o, gi) => ({ o, gi }))
+      .sort((x, y) => (x.o.year || '9999').localeCompare(y.o.year || '9999', undefined, { numeric: true }));
     const cmap = (window.COVER_MAP && window.COVER_MAP.ost) || [];
-    $('#ostList').innerHTML = all.map((o, gi) => {
+    $('#ostList').innerHTML = all.map(({ o, gi }) => {
       const cover = cmap[gi] || '';
       return `
       <a class="ost-card reveal" href="osts/ost-${gi}.html" style="animation-delay:${gi * 45}ms">
@@ -140,12 +142,29 @@
 
   /* ================= 渲染：国际作品 ================= */
   function renderGlobal() {
-    $('#globalGrid').innerHTML = src('GLOBAL_SONGS').map((g, i) => `
-      <div class="global-card reveal" style="animation-delay:${i * 60}ms">
-        <div class="gc-year">${g.year}</div>
-        <h3 class="gc-name">${g.name}</h3>
-        <p class="gc-note">${g.note}</p>
-      </div>`).join('');
+    const all = src('GLOBAL_SONGS').map((g, gi) => ({ g, gi }))
+      .sort((x, y) => (x.g.year || '9999').localeCompare(y.g.year || '9999', undefined, { numeric: true }));
+    const cmap = (window.COVER_MAP && window.COVER_MAP.global) || [];
+    $('#globalGrid').innerHTML = all.map(({ g, gi }) => {
+      const cover = cmap[gi] || '';
+      return `
+      <div class="ost-card reveal" style="animation-delay:${gi * 45}ms">
+        <div class="oc-cover">
+          <div class="ac-art" style="${grad(gi)}" aria-hidden="true">
+            <span class="ac-ring"></span>
+            <span class="ac-name">${g.name}</span>
+          </div>
+          ${cover ? `<img class="ac-img" src="${cover}" alt="${g.name} 封面" loading="lazy" decoding="async">` : ''}
+        </div>
+        <div class="oc-body">
+          <div class="oc-song">${g.name}</div>
+          <div class="oc-work">${g.work || ''}</div>
+          <div class="oc-year">${g.year}</div>
+        </div>
+      </div>`;
+    }).join('');
+    bindCoverFallback();
+    observeReveal();
   }
 
   /* ================= 渲染：巡演 ================= */
