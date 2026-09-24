@@ -479,16 +479,16 @@ const COVER_MAP = {
     'assets/img/osts/ost-12.jpg', 'assets/img/osts/ost-13.jpg', 'assets/img/osts/ost-14.jpg',
     'assets/img/osts/ost-15.jpg', 'assets/img/osts/ost-16.jpg', 'assets/img/osts/ost-17.jpg',
     'assets/img/osts/ost-18.jpg',
-    'assets/img/osts/ost-19.jpg', 'assets/img/osts/ost-20.jpg', 'assets/img/osts/ost-21.jpg',
-    'assets/img/osts/ost-22.jpg', 'assets/img/osts/ost-23.jpg', 'assets/img/osts/ost-24.jpg',
-    'assets/img/osts/ost-25.jpg', 'assets/img/osts/ost-26.jpg', 'assets/img/osts/ost-27.jpg',
-    'assets/img/osts/ost-28.jpg', 'assets/img/osts/ost-29.jpg', 'assets/img/osts/ost-30.jpg'
+    'assets/img/osts/WritingOnTheWall.jpg', 'assets/img/osts/Battlefield.jpg', 'assets/img/osts/女儿国.jpg',
+    'assets/img/osts/红蔷薇.jpg', 'assets/img/osts/双生焰.jpg', 'assets/img/osts/蝴蝶飓风.jpg',
+    'assets/img/osts/她.jpg', 'assets/img/osts/无华.jpg', 'assets/img/osts/最可爱的人.jpg',
+    'assets/img/osts/无忘.jpg', 'assets/img/osts/约定.jpg', 'assets/img/osts/偏星.jpg'
   ],
   global: [
-    'assets/img/globals/global-0.jpg', 'assets/img/globals/global-1.jpg', 'assets/img/globals/global-2.jpg',
-    'assets/img/globals/global-3.jpg', 'assets/img/globals/global-4.jpg', 'assets/img/globals/global-5.jpg',
-    'assets/img/globals/global-6.jpg', 'assets/img/globals/global-7.jpg', 'assets/img/globals/global-8.jpg',
-    'assets/img/globals/global-9.jpg', 'assets/img/globals/global-10.jpg'
+    'assets/img/globals/DustMyShouldersOff.jpg', 'assets/img/globals/808.jpg', 'assets/img/globals/FightingShadows.jpg',
+    'assets/img/globals/GreenLight.jpg', 'assets/img/globals/WorkForIt.jpg', 'assets/img/globals/印象西湖雨.jpg',
+    'assets/img/globals/ChangeYourWorld.jpg', 'assets/img/globals/DreamItPossible.jpg', 'assets/img/osts/Battlefield.jpg',
+    'assets/img/globals/DustMyShouldersOffSteveAokiRemix.jpg', 'assets/img/globals/MakeItBig.jpg'
   ]
 };
 /* 星路历程每项对应的背景图：
